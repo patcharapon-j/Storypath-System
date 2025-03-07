@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storypath Character Creation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Storypath Character Creation</h1>
+            <p>Create your character by selecting cards from each path</p>
+        </header>
+        
+        <div id="intro-screen" class="screen active">
+            <div class="intro-content">
+                <h2>Welcome to the Storypath System</h2>
+                <p>This character creation tool will guide you through creating a unique character with a rich backstory.</p>
+                <p>You'll select from three paths:</p>
+                <ul>
+                    <li><strong>Legacy Path</strong> - Where your character comes from</li>
+                    <li><strong>Bond Path</strong> - An impactful person in your character's life</li>
+                    <li><strong>Catalyst Path</strong> - The event that set them forward on their journey</li>
+                </ul>
+                <p>For each path, you'll choose 3 cards from 20 possibilities, then select one final card that best represents your character.</p>
+                <button id="start-btn" class="primary-btn">Begin Your Journey</button>
+            </div>
+        </div>
+
+        <div id="legacy-selection" class="screen">
+            <h2>Legacy Path</h2>
+            <p class="instructions">Select 3 cards that represent your character's origin</p>
+            <div class="card-grid" id="legacy-grid"></div>
+            <div class="navigation">
+                <button id="legacy-confirm" class="primary-btn" disabled>Confirm Selection (0/3)</button>
+            </div>
+        </div>
+
+        <div id="legacy-final" class="screen">
+            <h2>Legacy Path - Final Selection</h2>
+            <p class="instructions">Choose the one card that best defines your character's origin</p>
+            <div class="final-selection-container">
+                <div class="selected-cards" id="legacy-final-selection"></div>
+                <div class="card-description" id="legacy-card-description">
+                    <h3 id="legacy-description-title"></h3>
+                    <p id="legacy-description-text"></p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button id="legacy-back" class="secondary-btn">Back to Selection</button>
+                <button id="legacy-next" class="primary-btn" disabled>Continue to Bond Path</button>
+            </div>
+        </div>
+
+        <div id="bond-selection" class="screen">
+            <h2>Bond Path</h2>
+            <p class="instructions">Select 3 cards that represent an impactful person in your character's life</p>
+            <div class="card-grid" id="bond-grid"></div>
+            <div class="navigation">
+                <button id="bond-confirm" class="primary-btn" disabled>Confirm Selection (0/3)</button>
+            </div>
+        </div>
+
+        <div id="bond-final" class="screen">
+            <h2>Bond Path - Final Selection</h2>
+            <p class="instructions">Choose the one card that best defines your character's important relationship</p>
+            <div class="final-selection-container">
+                <div class="selected-cards" id="bond-final-selection"></div>
+                <div class="card-description" id="bond-card-description">
+                    <h3 id="bond-description-title"></h3>
+                    <p id="bond-description-text"></p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button id="bond-back" class="secondary-btn">Back to Selection</button>
+                <button id="bond-next" class="primary-btn" disabled>Continue to Catalyst Path</button>
+            </div>
+        </div>
+
+        <div id="catalyst-selection" class="screen">
+            <h2>Catalyst Path</h2>
+            <p class="instructions">Select 3 cards that represent the event that set your character on their journey</p>
+            <div class="card-grid" id="catalyst-grid"></div>
+            <div class="navigation">
+                <button id="catalyst-confirm" class="primary-btn" disabled>Confirm Selection (0/3)</button>
+            </div>
+        </div>
+
+        <div id="catalyst-final" class="screen">
+            <h2>Catalyst Path - Final Selection</h2>
+            <p class="instructions">Choose the one card that best defines your character's pivotal moment</p>
+            <div class="final-selection-container">
+                <div class="selected-cards" id="catalyst-final-selection"></div>
+                <div class="card-description" id="catalyst-card-description">
+                    <h3 id="catalyst-description-title"></h3>
+                    <p id="catalyst-description-text"></p>
+                </div>
+            </div>
+            <div class="navigation">
+                <button id="catalyst-back" class="secondary-btn">Back to Selection</button>
+                <button id="catalyst-next" class="primary-btn" disabled>Continue to Options</button>
+            </div>
+        </div>
+
+        <div id="catalyst-options" class="screen">
+            <h2>Catalyst Path - Choose an Option</h2>
+            <p class="instructions">For your catalyst, choose between a constructive or destructive outcome</p>
+            <div class="catalyst-container">
+                <div id="catalyst-card-display" class="final-card-container">
+                    <div class="final-card">
+                        <div class="final-card-front"></div>
+                        <div class="final-card-back"></div>
+                    </div>
+                </div>
+                <div class="catalyst-options">
+                    <div id="destructive-option" class="option-card">
+                        <h3>Destructive Outcome</h3>
+                        <p id="destructive-text"></p>
+                        <button class="option-btn" data-type="destructive">Choose This Path</button>
+                    </div>
+                    <div id="constructive-option" class="option-card">
+                        <h3>Constructive Outcome</h3>
+                        <p id="constructive-text"></p>
+                        <button class="option-btn" data-type="constructive">Choose This Path</button>
+                    </div>
+                </div>
+            </div>
+            <div class="navigation">
+                <button id="catalyst-options-back" class="secondary-btn">Back to Selection</button>
+                <button id="catalyst-options-next" class="primary-btn" disabled>Continue to Summary</button>
+            </div>
+        </div>
+
+        <div id="character-summary" class="screen">
+            <h2>Your Character's Story</h2>
+            <div class="summary-container">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <h3>Legacy</h3>
+                        <div id="summary-legacy-card" class="summary-card-img"></div>
+                        <h4 id="summary-legacy-title"></h4>
+                        <div class="divider"></div>
+                        <p id="summary-legacy-text"></p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Bond</h3>
+                        <div id="summary-bond-card" class="summary-card-img"></div>
+                        <h4 id="summary-bond-title"></h4>
+                        <div class="divider"></div>
+                        <p id="summary-bond-text"></p>
+                    </div>
+                    <div class="summary-card">
+                        <h3>Catalyst</h3>
+                        <div id="summary-catalyst-card" class="summary-card-img"></div>
+                        <h4 id="summary-catalyst-title"></h4>
+                        <div class="divider"></div>
+                        <p id="summary-catalyst-text"></p>
+                    </div>
+                </div>
+                <div class="character-notes">
+                    <h3>Character Notes</h3>
+                    <textarea id="character-notes-input" placeholder="Add additional details about your character here..."></textarea>
+                    <div class="navigation">
+                        <button id="restart-btn" class="secondary-btn">Create New Character</button>
+                        <button id="save-btn" class="primary-btn">Save Character</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include jsPDF for PDF generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -271,7 +271,6 @@ function createCard(card, type, isSelectable = true, isSelected = false) {
             <div class="card-back"></div>
             <div class="card-front">
                 <img src="${imagePath}" alt="${card.title}">
-                <div class="card-title">${card.title}</div>
             </div>
         </div>
     `;

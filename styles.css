@@ -659,6 +659,8 @@ header h1 {
     line-height: 1.7;
     font-size: 1.05rem;
     text-align: justify;
+    -webkit-hyphens: auto;
+    hyphens: auto;
 }
 
 /* Card Flip Animation */

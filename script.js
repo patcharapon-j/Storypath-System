@@ -610,14 +610,14 @@ function saveCharacter() {
     };
     
     // First save as JSON for data portability
-    const characterJSON = JSON.stringify(character, null, 2);
-    const jsonBlob = new Blob([characterJSON], { type: 'application/json' });
-    const jsonUrl = URL.createObjectURL(jsonBlob);
-    const jsonLink = document.createElement('a');
-    jsonLink.href = jsonUrl;
-    jsonLink.download = 'storypath-character.json';
-    jsonLink.click();
-    URL.revokeObjectURL(jsonUrl);
+    // const characterJSON = JSON.stringify(character, null, 2);
+    // const jsonBlob = new Blob([characterJSON], { type: 'application/json' });
+    // const jsonUrl = URL.createObjectURL(jsonBlob);
+    // const jsonLink = document.createElement('a');
+    // jsonLink.href = jsonUrl;
+    // jsonLink.download = 'storypath-character.json';
+    // jsonLink.click();
+    // URL.revokeObjectURL(jsonUrl);
     
     // Then create a PDF with a nicer layout
     generatePDF(character);

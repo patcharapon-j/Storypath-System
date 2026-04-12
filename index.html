@@ -7,170 +7,243 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Atmospheric dot grid canvas -->
+    <canvas id="dot-grid-canvas"></canvas>
+
     <div class="app-container">
-        <header>
-            <h1>Storypath Character Creation</h1>
-            <p>Create your character by selecting cards from each path</p>
+        <!-- Sticky header -->
+        <header class="sp-header">
+            <span class="sp-header-title">Storypath</span>
         </header>
-        
+
+        <!-- Progress bar (hidden on intro) -->
+        <div class="progress-bar" id="progress-bar">
+            <div class="progress-slot" id="progress-legacy">
+                <div class="progress-slot-card" id="progress-legacy-card">
+                    <span class="sp-diamond"></span>
+                </div>
+                <span class="progress-slot-label">Legacy</span>
+            </div>
+
+            <div class="progress-connector" id="connector-1">
+                <div class="progress-connector-fill"></div>
+            </div>
+
+            <div class="progress-slot" id="progress-bond">
+                <div class="progress-slot-card" id="progress-bond-card">
+                    <span class="sp-diamond"></span>
+                </div>
+                <span class="progress-slot-label">Bond</span>
+            </div>
+
+            <div class="progress-connector" id="connector-2">
+                <div class="progress-connector-fill"></div>
+            </div>
+
+            <div class="progress-slot" id="progress-catalyst">
+                <div class="progress-slot-card" id="progress-catalyst-card">
+                    <span class="sp-diamond"></span>
+                </div>
+                <span class="progress-slot-label">Catalyst</span>
+            </div>
+        </div>
+
+        <!-- Screen 1: Intro -->
         <div id="intro-screen" class="screen active">
             <div class="intro-content">
-                <h2>Welcome to the Storypath System</h2>
-                <p>This character creation tool will guide you through creating a unique character with a rich backstory.</p>
-                <p>You'll select from three paths:</p>
-                <ul>
-                    <li><strong>Legacy Path</strong> - Where your character comes from</li>
-                    <li><strong>Bond Path</strong> - An impactful person in your character's life</li>
-                    <li><strong>Catalyst Path</strong> - The event that set them forward on their journey</li>
-                </ul>
-                <p>For each path, you'll choose 3 cards from 20 possibilities, then select one final card that best represents your character.</p>
-                <button id="start-btn" class="primary-btn">Begin Your Journey</button>
+                <h1 class="intro-title">Storypath</h1>
+                <p class="intro-subtitle">Character Creation System</p>
+                <p class="intro-description">
+                    Build a character with a rich backstory by selecting cards
+                    from three narrative paths. Each path shapes a different
+                    aspect of who your character is and where they came from.
+                </p>
+                <div class="intro-paths">
+                    <div class="intro-path-item">
+                        <span class="sp-diamond sp-diamond-active"></span>
+                        <span class="intro-path-label">Legacy</span>
+                    </div>
+                    <div class="intro-path-item">
+                        <span class="sp-diamond sp-diamond-active"></span>
+                        <span class="intro-path-label">Bond</span>
+                    </div>
+                    <div class="intro-path-item">
+                        <span class="sp-diamond sp-diamond-active"></span>
+                        <span class="intro-path-label">Catalyst</span>
+                    </div>
+                </div>
+                <button id="start-btn" class="sp-btn sp-btn-primary">Begin Your Journey</button>
             </div>
         </div>
 
-        <div id="legacy-selection" class="screen">
-            <h2>Legacy Path</h2>
+        <!-- Screen 2: Legacy Path (Phase 1 fan + Phase 2 promoted) -->
+        <div id="legacy-screen" class="screen">
+            <h2 class="sp-heading"><span class="sp-diamond sp-diamond-active"></span> Legacy Path</h2>
             <p class="instructions">Select 3 cards that represent your character's origin</p>
+
+            <!-- Phase 1: Fan -->
             <div class="card-grid" id="legacy-grid"></div>
-            <div class="navigation">
-                <button id="legacy-confirm" class="primary-btn" disabled>Confirm Selection (0/3)</button>
+            <div class="navigation" id="legacy-phase1-nav">
+                <button id="legacy-confirm" class="sp-btn sp-btn-primary" disabled>Confirm Selection (0/3)</button>
+            </div>
+
+            <!-- Phase 2: Promoted cards -->
+            <div class="promoted-cards" id="legacy-promoted" style="display:none;"></div>
+            <div class="card-description-panel sp-panel sp-corners" id="legacy-description" style="display:none;">
+                <div class="sp-corners-bottom"></div>
+                <span class="sp-label" id="legacy-desc-label"></span>
+                <h3 class="sp-card-title" id="legacy-desc-title"></h3>
+                <div class="sp-divider"><span class="sp-diamond sp-diamond-active"></span></div>
+                <p class="sp-body" id="legacy-desc-text"></p>
+            </div>
+            <div class="navigation" id="legacy-phase2-nav" style="display:none;">
+                <button id="legacy-back-fan" class="sp-btn sp-btn-secondary">Back to Fan</button>
+                <button id="legacy-next" class="sp-btn sp-btn-primary" disabled>Continue to Bond Path</button>
             </div>
         </div>
 
-        <div id="legacy-final" class="screen">
-            <h2>Legacy Path - Final Selection</h2>
-            <p class="instructions">Choose the one card that best defines your character's origin</p>
-            <div class="final-selection-container">
-                <div class="selected-cards" id="legacy-final-selection"></div>
-                <div class="card-description" id="legacy-card-description">
-                    <h3 id="legacy-description-title"></h3>
-                    <p id="legacy-description-text"></p>
-                </div>
-            </div>
-            <div class="navigation">
-                <button id="legacy-back" class="secondary-btn">Back to Selection</button>
-                <button id="legacy-next" class="primary-btn" disabled>Continue to Bond Path</button>
-            </div>
-        </div>
-
-        <div id="bond-selection" class="screen">
-            <h2>Bond Path</h2>
+        <!-- Screen 3: Bond Path -->
+        <div id="bond-screen" class="screen">
+            <h2 class="sp-heading"><span class="sp-diamond sp-diamond-active"></span> Bond Path</h2>
             <p class="instructions">Select 3 cards that represent an impactful person in your character's life</p>
+
             <div class="card-grid" id="bond-grid"></div>
-            <div class="navigation">
-                <button id="bond-confirm" class="primary-btn" disabled>Confirm Selection (0/3)</button>
+            <div class="navigation" id="bond-phase1-nav">
+                <button id="bond-confirm" class="sp-btn sp-btn-primary" disabled>Confirm Selection (0/3)</button>
+            </div>
+
+            <div class="promoted-cards" id="bond-promoted" style="display:none;"></div>
+            <div class="card-description-panel sp-panel sp-corners" id="bond-description" style="display:none;">
+                <div class="sp-corners-bottom"></div>
+                <span class="sp-label" id="bond-desc-label"></span>
+                <h3 class="sp-card-title" id="bond-desc-title"></h3>
+                <div class="sp-divider"><span class="sp-diamond sp-diamond-active"></span></div>
+                <p class="sp-body" id="bond-desc-text"></p>
+            </div>
+            <div class="navigation" id="bond-phase2-nav" style="display:none;">
+                <button id="bond-back-fan" class="sp-btn sp-btn-secondary">Back to Fan</button>
+                <button id="bond-next" class="sp-btn sp-btn-primary" disabled>Continue to Catalyst Path</button>
             </div>
         </div>
 
-        <div id="bond-final" class="screen">
-            <h2>Bond Path - Final Selection</h2>
-            <p class="instructions">Choose the one card that best defines your character's important relationship</p>
-            <div class="final-selection-container">
-                <div class="selected-cards" id="bond-final-selection"></div>
-                <div class="card-description" id="bond-card-description">
-                    <h3 id="bond-description-title"></h3>
-                    <p id="bond-description-text"></p>
-                </div>
-            </div>
-            <div class="navigation">
-                <button id="bond-back" class="secondary-btn">Back to Selection</button>
-                <button id="bond-next" class="primary-btn" disabled>Continue to Catalyst Path</button>
-            </div>
-        </div>
-
-        <div id="catalyst-selection" class="screen">
-            <h2>Catalyst Path</h2>
+        <!-- Screen 4: Catalyst Path -->
+        <div id="catalyst-screen" class="screen">
+            <h2 class="sp-heading"><span class="sp-diamond sp-diamond-active"></span> Catalyst Path</h2>
             <p class="instructions">Select 3 cards that represent the event that set your character on their journey</p>
+
             <div class="card-grid" id="catalyst-grid"></div>
-            <div class="navigation">
-                <button id="catalyst-confirm" class="primary-btn" disabled>Confirm Selection (0/3)</button>
+            <div class="navigation" id="catalyst-phase1-nav">
+                <button id="catalyst-confirm" class="sp-btn sp-btn-primary" disabled>Confirm Selection (0/3)</button>
+            </div>
+
+            <div class="promoted-cards" id="catalyst-promoted" style="display:none;"></div>
+            <div class="card-description-panel sp-panel sp-corners" id="catalyst-description" style="display:none;">
+                <div class="sp-corners-bottom"></div>
+                <span class="sp-label" id="catalyst-desc-label"></span>
+                <h3 class="sp-card-title" id="catalyst-desc-title"></h3>
+                <div class="sp-divider"><span class="sp-diamond sp-diamond-active"></span></div>
+                <p class="sp-body" id="catalyst-desc-text"></p>
+            </div>
+            <div class="navigation" id="catalyst-phase2-nav" style="display:none;">
+                <button id="catalyst-back-fan" class="sp-btn sp-btn-secondary">Back to Fan</button>
+                <button id="catalyst-next" class="sp-btn sp-btn-primary" disabled>Continue to Options</button>
             </div>
         </div>
 
-        <div id="catalyst-final" class="screen">
-            <h2>Catalyst Path - Final Selection</h2>
-            <p class="instructions">Choose the one card that best defines your character's pivotal moment</p>
-            <div class="final-selection-container">
-                <div class="selected-cards" id="catalyst-final-selection"></div>
-                <div class="card-description" id="catalyst-card-description">
-                    <h3 id="catalyst-description-title"></h3>
-                    <p id="catalyst-description-text"></p>
-                </div>
-            </div>
-            <div class="navigation">
-                <button id="catalyst-back" class="secondary-btn">Back to Selection</button>
-                <button id="catalyst-next" class="primary-btn" disabled>Continue to Options</button>
-            </div>
-        </div>
-
-        <div id="catalyst-options" class="screen">
-            <h2>Catalyst Path - Choose an Option</h2>
+        <!-- Screen 5: Catalyst Options -->
+        <div id="catalyst-options-screen" class="screen">
+            <h2 class="sp-heading"><span class="sp-diamond sp-diamond-active"></span> Catalyst — Choose Your Outcome</h2>
             <p class="instructions">For your catalyst, choose between a constructive or destructive outcome</p>
+
             <div class="catalyst-container">
-                <div id="catalyst-card-display" class="final-card-container">
-                    <div class="final-card">
-                        <div class="final-card-front"></div>
-                        <div class="final-card-back"></div>
-                    </div>
+                <div class="catalyst-card-display sp-panel sp-corners" id="catalyst-card-display">
+                    <div class="sp-corners-bottom"></div>
                 </div>
+
                 <div class="catalyst-options">
-                    <div id="destructive-option" class="option-card">
+                    <div class="option-card sp-panel sp-corners sp-scan-line" data-type="destructive" id="destructive-option">
+                        <div class="sp-corners-bottom"></div>
                         <h3>Destructive Outcome</h3>
-                        <p id="destructive-text"></p>
-                        <button class="option-btn" data-type="destructive">Choose This Path</button>
+                        <div class="sp-divider"><span class="sp-diamond"></span></div>
+                        <p id="destructive-text" class="sp-body"></p>
                     </div>
-                    <div id="constructive-option" class="option-card">
+                    <div class="option-card sp-panel sp-corners sp-scan-line" data-type="constructive" id="constructive-option">
+                        <div class="sp-corners-bottom"></div>
                         <h3>Constructive Outcome</h3>
-                        <p id="constructive-text"></p>
-                        <button class="option-btn" data-type="constructive">Choose This Path</button>
+                        <div class="sp-divider"><span class="sp-diamond"></span></div>
+                        <p id="constructive-text" class="sp-body"></p>
                     </div>
                 </div>
             </div>
+
             <div class="navigation">
-                <button id="catalyst-options-back" class="secondary-btn">Back to Selection</button>
-                <button id="catalyst-options-next" class="primary-btn" disabled>Continue to Summary</button>
+                <button id="catalyst-options-back" class="sp-btn sp-btn-secondary">Back</button>
+                <button id="catalyst-options-next" class="sp-btn sp-btn-primary" disabled>Continue to Summary</button>
             </div>
         </div>
 
-        <div id="character-summary" class="screen">
-            <h2>Your Character's Story</h2>
+        <!-- Screen 6: Character Summary / Dossier -->
+        <div id="summary-screen" class="screen">
             <div class="summary-container">
-                <div class="summary-cards">
-                    <div class="summary-card">
-                        <h3>Legacy</h3>
-                        <div id="summary-legacy-card" class="summary-card-img"></div>
-                        <h4 id="summary-legacy-title"></h4>
-                        <div class="divider"></div>
-                        <p id="summary-legacy-text"></p>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Bond</h3>
-                        <div id="summary-bond-card" class="summary-card-img"></div>
-                        <h4 id="summary-bond-title"></h4>
-                        <div class="divider"></div>
-                        <p id="summary-bond-text"></p>
-                    </div>
-                    <div class="summary-card">
-                        <h3>Catalyst</h3>
-                        <div id="summary-catalyst-card" class="summary-card-img"></div>
-                        <h4 id="summary-catalyst-title"></h4>
-                        <div class="divider"></div>
-                        <p id="summary-catalyst-text"></p>
+                <div class="summary-header">
+                    <h2 class="sp-heading">Character Dossier</h2>
+                    <div class="sp-divider"><span class="sp-diamond sp-diamond-active"></span></div>
+                    <div class="summary-header-cards" id="summary-header-cards"></div>
+                </div>
+
+                <!-- Legacy section -->
+                <div class="summary-path-section sp-panel sp-corners" id="summary-legacy-section">
+                    <div class="sp-corners-bottom"></div>
+                    <div class="summary-path-image" id="summary-legacy-image"></div>
+                    <div class="summary-path-text">
+                        <span class="sp-label">Legacy</span>
+                        <h3 class="sp-card-title" id="summary-legacy-title"></h3>
+                        <div class="sp-divider"><span class="sp-diamond sp-diamond-active"></span></div>
+                        <p class="sp-body" id="summary-legacy-text"></p>
                     </div>
                 </div>
-                <div class="character-notes">
-                    <h3>Character Notes</h3>
-                    <textarea id="character-notes-input" placeholder="Add additional details about your character here..."></textarea>
-                    <div class="navigation">
-                        <button id="restart-btn" class="secondary-btn">Create New Character</button>
-                        <button id="save-btn" class="primary-btn">Save Character</button>
+
+                <!-- Bond section -->
+                <div class="summary-path-section sp-panel sp-corners" id="summary-bond-section">
+                    <div class="sp-corners-bottom"></div>
+                    <div class="summary-path-image" id="summary-bond-image"></div>
+                    <div class="summary-path-text">
+                        <span class="sp-label">Bond</span>
+                        <h3 class="sp-card-title" id="summary-bond-title"></h3>
+                        <div class="sp-divider"><span class="sp-diamond sp-diamond-active"></span></div>
+                        <p class="sp-body" id="summary-bond-text"></p>
                     </div>
+                </div>
+
+                <!-- Catalyst section -->
+                <div class="summary-path-section sp-panel sp-corners" id="summary-catalyst-section">
+                    <div class="sp-corners-bottom"></div>
+                    <div class="summary-path-image" id="summary-catalyst-image"></div>
+                    <div class="summary-path-text">
+                        <span class="sp-label" id="summary-catalyst-type-label">Catalyst</span>
+                        <h3 class="sp-card-title" id="summary-catalyst-title"></h3>
+                        <div class="sp-divider"><span class="sp-diamond sp-diamond-active"></span></div>
+                        <p class="sp-body" id="summary-catalyst-text"></p>
+                    </div>
+                </div>
+
+                <!-- Notes -->
+                <div class="summary-notes sp-panel sp-corners">
+                    <div class="sp-corners-bottom"></div>
+                    <span class="sp-label">Character Notes</span>
+                    <textarea id="character-notes-input" class="sp-input" placeholder="Add additional details about your character..."></textarea>
+                </div>
+
+                <!-- Actions -->
+                <div class="summary-actions">
+                    <button id="restart-btn" class="sp-btn sp-btn-secondary">Create New Character</button>
+                    <button id="save-btn" class="sp-btn sp-btn-primary">Save as PDF</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Include jsPDF for PDF generation -->
+    <!-- jsPDF for PDF generation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>

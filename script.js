@@ -859,6 +859,171 @@ function spawnFlipRipple(cardEl, type) {
 }
 
 // ══════════════════════════════════════════════════
+// ── PDF Generation ──
+// ══════════════════════════════════════════════════
+
+function saveCharacter() {
+    const notes = document.getElementById('character-notes-input').value;
+
+    const character = {
+        legacy: { title: app.finalLegacyCard.title, description: app.finalLegacyCard.description, imagePath: getImagePath(app.finalLegacyCard, 'legacy') },
+        bond: { title: app.finalBondCard.title, description: app.finalBondCard.description, imagePath: getImagePath(app.finalBondCard, 'bond') },
+        catalyst: {
+            title: app.finalCatalystCard.title.split('/')[app.catalystChoice === 'destructive' ? 0 : 1].trim(),
+            description: app.finalCatalystCard[app.catalystChoice],
+            imagePath: getImagePath(app.finalCatalystCard, 'catalyst'),
+            type: app.catalystChoice
+        },
+        notes
+    };
+
+    generatePDF(character);
+}
+
+async function generatePDF(character) {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+    const pageW = 210;
+    const margin = 20;
+    const contentW = pageW - margin * 2;
+
+    // Dark background
+    doc.setFillColor(10, 10, 16);
+    doc.rect(0, 0, pageW, 297, 'F');
+
+    // Title
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(22);
+    doc.setTextColor(237, 237, 244);
+    doc.text('CHARACTER DOSSIER', pageW / 2, 25, { align: 'center' });
+
+    // Purple accent line
+    doc.setDrawColor(155, 109, 255);
+    doc.setLineWidth(0.5);
+    doc.line(margin, 30, pageW - margin, 30);
+
+    // Subtitle
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(85, 85, 104);
+    doc.text('STORYPATH CHARACTER CREATION SYSTEM', pageW / 2, 35, { align: 'center' });
+
+    // Load images as base64
+    async function loadImage(src) {
+        return new Promise((resolve) => {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                canvas.getContext('2d').drawImage(img, 0, 0);
+                resolve(canvas.toDataURL('image/jpeg', 0.85));
+            };
+            img.onerror = () => resolve(null);
+            img.src = src;
+        });
+    }
+
+    let y = 45;
+
+    // Render each path section
+    const sections = [
+        { label: 'LEGACY', data: character.legacy },
+        { label: 'BOND', data: character.bond },
+        { label: 'CATALYST — ' + (character.catalyst.type || '').toUpperCase(), data: character.catalyst }
+    ];
+
+    for (const section of sections) {
+        // Check if we need a new page
+        if (y > 220) {
+            doc.addPage();
+            doc.setFillColor(10, 10, 16);
+            doc.rect(0, 0, pageW, 297, 'F');
+            y = 20;
+        }
+
+        // Section border box
+        doc.setDrawColor(155, 109, 255);
+        doc.setLineWidth(0.2);
+
+        // Try to load and embed card image
+        const imgData = await loadImage(section.data.imagePath);
+        const imgW = 40;
+        const imgH = imgW * (1431 / 867);
+        const textX = margin + imgW + 8;
+        const textW = contentW - imgW - 8;
+
+        if (imgData) {
+            doc.addImage(imgData, 'JPEG', margin, y, imgW, imgH);
+        }
+
+        // Section label
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(155, 109, 255);
+        doc.text(section.label, textX, y + 5);
+
+        // Title
+        doc.setFontSize(14);
+        doc.setTextColor(237, 237, 244);
+        doc.text(section.data.title, textX, y + 13);
+
+        // Divider line
+        doc.setDrawColor(155, 109, 255);
+        doc.setLineWidth(0.15);
+        doc.line(textX, y + 16, textX + textW, y + 16);
+
+        // Description
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(142, 142, 163);
+        const lines = doc.splitTextToSize(section.data.description, textW);
+        doc.text(lines, textX, y + 22);
+
+        const textHeight = lines.length * 4.5;
+        const sectionHeight = Math.max(imgH, textHeight + 25);
+        y += sectionHeight + 15;
+    }
+
+    // Notes section
+    if (character.notes && character.notes.trim()) {
+        if (y > 230) {
+            doc.addPage();
+            doc.setFillColor(10, 10, 16);
+            doc.rect(0, 0, pageW, 297, 'F');
+            y = 20;
+        }
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(155, 109, 255);
+        doc.text('CHARACTER NOTES', margin, y + 5);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        doc.setTextColor(142, 142, 163);
+        const noteLines = doc.splitTextToSize(character.notes, contentW);
+        doc.text(noteLines, margin, y + 13);
+    }
+
+    // Footer on all pages
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFillColor(10, 10, 16); // ensure bg on extra pages
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        doc.setTextColor(85, 85, 104);
+        doc.text('CREATED WITH STORYPATH CHARACTER SYSTEM', pageW / 2, 290, { align: 'center' });
+        doc.text(`PAGE ${i} OF ${pageCount}`, pageW - margin, 290, { align: 'right' });
+    }
+
+    doc.save('storypath-character.pdf');
+}
+
+// ══════════════════════════════════════════════════
 // ── Initialization ──
 // ══════════════════════════════════════════════════
 

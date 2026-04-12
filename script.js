@@ -303,3 +303,425 @@ function populateCardGrid(type) {
     // Layout after DOM has the cards
     requestAnimationFrame(() => applyFanLayout(grid));
 }
+
+// ══════════════════════════════════════════════════
+// ── Promote & Dim (Phase 2) ──
+// ══════════════════════════════════════════════════
+
+function enterPhase2(type) {
+    const grid = document.getElementById(`${type}-grid`);
+    const promoted = document.getElementById(`${type}-promoted`);
+    const desc = document.getElementById(`${type}-description`);
+    const phase1Nav = document.getElementById(`${type}-phase1-nav`);
+    const phase2Nav = document.getElementById(`${type}-phase2-nav`);
+
+    app[`${type}Phase`] = 'promoted';
+
+    // Fade out unselected cards
+    const allCards = Array.from(grid.querySelectorAll('.card'));
+    const selectedIds = app[`selected${capitalize(type)}Cards`].map(c => c.id);
+
+    allCards.forEach((card, i) => {
+        if (!selectedIds.includes(parseInt(card.dataset.id))) {
+            card.style.transition = `opacity 0.3s var(--ease-default) ${i * 0.02}s, transform 0.3s var(--ease-default) ${i * 0.02}s`;
+            card.style.opacity = '0';
+            card.style.transform += ' scale(0.8)';
+        }
+    });
+
+    // After fade, hide grid and show promoted
+    setTimeout(() => {
+        grid.style.display = 'none';
+        phase1Nav.style.display = 'none';
+        promoted.style.display = '';
+        desc.style.display = '';
+        phase2Nav.style.display = '';
+
+        renderPromotedCards(type);
+    }, 500);
+}
+
+function renderPromotedCards(type) {
+    const container = document.getElementById(`${type}-promoted`);
+    container.innerHTML = '';
+
+    const cards = app[`selected${capitalize(type)}Cards`];
+
+    cards.forEach((card, i) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'promoted-card-container sp-panel sp-corners';
+        wrapper.dataset.id = card.id;
+
+        const imgEl = document.createElement('div');
+        imgEl.className = 'promoted-card';
+        imgEl.innerHTML = `<img src="${getImagePath(card, type)}" alt="${card.title}">`;
+
+        const bottom = document.createElement('div');
+        bottom.className = 'sp-corners-bottom';
+
+        wrapper.appendChild(bottom);
+        wrapper.appendChild(imgEl);
+        container.appendChild(wrapper);
+
+        // Staggered entrance
+        wrapper.style.opacity = '0';
+        wrapper.style.transform = 'translateY(20px) scale(0.95)';
+        setTimeout(() => {
+            wrapper.style.transition = 'all 0.5s var(--ease-default)';
+            wrapper.style.opacity = '1';
+            wrapper.style.transform = 'translateY(0) scale(1)';
+        }, 150 + i * 100);
+
+        // Hover: show description
+        imgEl.addEventListener('mouseenter', () => showDescription(type, card));
+
+        // Click: select as final
+        imgEl.addEventListener('click', () => selectFinalCard(type, card));
+    });
+}
+
+function showDescription(type, card) {
+    const panel = document.getElementById(`${type}-description`);
+    const label = document.getElementById(`${type}-desc-label`);
+    const title = document.getElementById(`${type}-desc-title`);
+    const text = document.getElementById(`${type}-desc-text`);
+
+    label.textContent = capitalize(type);
+    title.textContent = card.title;
+
+    if (type === 'catalyst') {
+        text.innerHTML = `<strong style="color:var(--path-catalyst)">Destructive:</strong> ${card.destructive}<br><br><strong style="color:var(--accent-purple)">Constructive:</strong> ${card.constructive}`;
+    } else {
+        text.textContent = card.description;
+    }
+
+    panel.classList.add('active');
+}
+
+function selectFinalCard(type, card) {
+    const finalKey = `final${capitalize(type)}Card`;
+    const container = document.getElementById(`${type}-promoted`);
+    const nextBtn = document.getElementById(`${type}-next`);
+
+    // If clicking the already-selected card, deselect
+    if (app[finalKey] && app[finalKey].id === card.id) {
+        app[finalKey] = null;
+        container.querySelectorAll('.promoted-card-container').forEach(el => {
+            el.classList.remove('chosen', 'dimmed');
+        });
+        nextBtn.disabled = true;
+        return;
+    }
+
+    app[finalKey] = card;
+
+    // Update visual states
+    container.querySelectorAll('.promoted-card-container').forEach(el => {
+        if (parseInt(el.dataset.id) === card.id) {
+            el.classList.add('chosen');
+            el.classList.remove('dimmed');
+        } else {
+            el.classList.remove('chosen');
+            el.classList.add('dimmed');
+        }
+    });
+
+    // Lock description to selected card
+    showDescription(type, card);
+
+    nextBtn.disabled = false;
+}
+
+function exitPhase2(type) {
+    const grid = document.getElementById(`${type}-grid`);
+    const promoted = document.getElementById(`${type}-promoted`);
+    const desc = document.getElementById(`${type}-description`);
+    const phase1Nav = document.getElementById(`${type}-phase1-nav`);
+    const phase2Nav = document.getElementById(`${type}-phase2-nav`);
+
+    app[`${type}Phase`] = 'fan';
+    app[`final${capitalize(type)}Card`] = null;
+
+    // Hide promoted, show grid
+    promoted.style.display = 'none';
+    desc.style.display = 'none';
+    desc.classList.remove('active');
+    phase2Nav.style.display = 'none';
+
+    grid.style.display = '';
+    phase1Nav.style.display = '';
+
+    // Restore fan cards
+    const allCards = Array.from(grid.querySelectorAll('.card'));
+    allCards.forEach(card => {
+        card.style.opacity = '1';
+        card.style.transform = card.classList.contains('selected')
+            ? 'rotate(0deg) translateY(-50px) scale(1.25)'
+            : `rotate(${card.dataset.fanAngle}deg)`;
+    });
+
+    document.getElementById(`${type}-next`).disabled = true;
+}
+
+// ══════════════════════════════════════════════════
+// ── Progress Bar ──
+// ══════════════════════════════════════════════════
+
+function updateProgressBar(type, card) {
+    const slotCard = document.getElementById(`progress-${type}-card`);
+    const slot = document.getElementById(`progress-${type}`);
+
+    // Fill slot with card thumbnail
+    slotCard.innerHTML = `<img src="${getImagePath(card, type)}" alt="${card.title}">`;
+    slotCard.classList.add('filled');
+    slot.classList.add('completed');
+
+    // Update label to card title
+    slot.querySelector('.progress-slot-label').textContent = card.title;
+
+    // Fill connector line
+    const connectorMap = { legacy: 'connector-1', bond: 'connector-2' };
+    if (connectorMap[type]) {
+        document.getElementById(connectorMap[type]).classList.add('filled');
+    }
+}
+
+// Popover on click (for filled slots)
+function setupProgressPopovers() {
+    document.querySelectorAll('.progress-slot-card').forEach(slot => {
+        slot.addEventListener('click', (e) => {
+            if (!slot.classList.contains('filled')) return;
+            e.stopPropagation();
+
+            // Close any open popover
+            document.querySelectorAll('.progress-popover.active').forEach(p => p.classList.remove('active'));
+
+            // Find or create popover
+            const parent = slot.closest('.progress-slot');
+            let popover = parent.querySelector('.progress-popover');
+            if (!popover) {
+                const type = parent.id.replace('progress-', '');
+                const card = app[`final${capitalize(type)}Card`];
+                if (!card) return;
+
+                popover = document.createElement('div');
+                popover.className = 'progress-popover sp-panel sp-corners';
+                popover.innerHTML = `
+                    <div class="sp-corners-bottom"></div>
+                    <img src="${getImagePath(card, type)}" alt="${card.title}">
+                    <h4 class="sp-card-title" style="font-size:0.9rem;">${card.title}</h4>
+                    <p class="sp-body" style="font-size:0.8rem;">${(card.description || card.destructive || '').substring(0, 100)}...</p>
+                `;
+                parent.appendChild(popover);
+            }
+
+            requestAnimationFrame(() => popover.classList.add('active'));
+        });
+    });
+
+    // Close popover on click outside
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.progress-popover.active').forEach(p => p.classList.remove('active'));
+    });
+}
+
+// ══════════════════════════════════════════════════
+// ── Catalyst Options ──
+// ══════════════════════════════════════════════════
+
+function setupCatalystOptions() {
+    const card = app.finalCatalystCard;
+    if (!card) return;
+
+    // Display card image
+    const display = document.getElementById('catalyst-card-display');
+    const imgPath = getImagePath(card, 'catalyst');
+    // Keep corners-bottom, add image
+    display.querySelector('.sp-corners-bottom');
+    const existingImg = display.querySelector('img');
+    if (existingImg) existingImg.remove();
+    const img = document.createElement('img');
+    img.src = imgPath;
+    img.alt = card.title;
+    img.style.cssText = 'width:100%; aspect-ratio:867/1431; object-fit:cover; display:block; border-radius:4px;';
+    display.appendChild(img);
+
+    // Set text
+    document.getElementById('destructive-text').textContent = card.destructive;
+    document.getElementById('constructive-text').textContent = card.constructive;
+
+    // Reset selections
+    document.querySelectorAll('.option-card').forEach(o => o.classList.remove('selected'));
+    document.getElementById('catalyst-options-next').disabled = true;
+
+    // Click handlers on option cards
+    document.querySelectorAll('.option-card').forEach(optionCard => {
+        optionCard.onclick = function() {
+            document.querySelectorAll('.option-card').forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
+            app.catalystChoice = this.dataset.type;
+            document.getElementById('catalyst-options-next').disabled = false;
+        };
+    });
+}
+
+// ══════════════════════════════════════════════════
+// ── Summary ──
+// ══════════════════════════════════════════════════
+
+function populateSummary() {
+    if (!app.finalLegacyCard || !app.finalBondCard || !app.finalCatalystCard || !app.catalystChoice) return;
+
+    // Header cards
+    const headerCards = document.getElementById('summary-header-cards');
+    headerCards.innerHTML = '';
+    [
+        { card: app.finalLegacyCard, type: 'legacy' },
+        { card: app.finalBondCard, type: 'bond' },
+        { card: app.finalCatalystCard, type: 'catalyst' }
+    ].forEach(({ card, type }) => {
+        const div = document.createElement('div');
+        div.className = 'summary-header-card sp-panel';
+        div.innerHTML = `<img src="${getImagePath(card, type)}" alt="${card.title}">`;
+        headerCards.appendChild(div);
+    });
+
+    // Legacy section
+    document.getElementById('summary-legacy-image').innerHTML = `<img src="${getImagePath(app.finalLegacyCard, 'legacy')}" alt="${app.finalLegacyCard.title}">`;
+    document.getElementById('summary-legacy-title').textContent = app.finalLegacyCard.title;
+    document.getElementById('summary-legacy-text').textContent = app.finalLegacyCard.description;
+
+    // Bond section
+    document.getElementById('summary-bond-image').innerHTML = `<img src="${getImagePath(app.finalBondCard, 'bond')}" alt="${app.finalBondCard.title}">`;
+    document.getElementById('summary-bond-title').textContent = app.finalBondCard.title;
+    document.getElementById('summary-bond-text').textContent = app.finalBondCard.description;
+
+    // Catalyst section
+    document.getElementById('summary-catalyst-image').innerHTML = `<img src="${getImagePath(app.finalCatalystCard, 'catalyst')}" alt="${app.finalCatalystCard.title}">`;
+    const chosenTitle = app.finalCatalystCard.title.split('/')[app.catalystChoice === 'destructive' ? 0 : 1].trim();
+    document.getElementById('summary-catalyst-title').textContent = chosenTitle;
+    document.getElementById('summary-catalyst-text').textContent = app.finalCatalystCard[app.catalystChoice];
+    document.getElementById('summary-catalyst-type-label').textContent = `Catalyst — ${app.catalystChoice}`;
+
+    // Staggered entrance for path sections
+    document.querySelectorAll('.summary-path-section').forEach((section, i) => {
+        section.style.opacity = '0';
+        section.style.transform = 'translateY(30px)';
+        section.style.transition = 'none';
+        setTimeout(() => {
+            section.style.transition = 'opacity 0.6s var(--ease-default), transform 0.6s var(--ease-default)';
+            section.style.opacity = '1';
+            section.style.transform = 'translateY(0)';
+        }, 200 + i * 150);
+    });
+}
+
+// ══════════════════════════════════════════════════
+// ── Reset ──
+// ══════════════════════════════════════════════════
+
+function resetApp() {
+    app.selectedLegacyCards = [];
+    app.selectedBondCards = [];
+    app.selectedCatalystCards = [];
+    app.finalLegacyCard = null;
+    app.finalBondCard = null;
+    app.finalCatalystCard = null;
+    app.catalystChoice = null;
+    app.legacyPhase = 'fan';
+    app.bondPhase = 'fan';
+    app.catalystPhase = 'fan';
+
+    document.getElementById('character-notes-input').value = '';
+
+    // Reset progress bar
+    ['legacy', 'bond', 'catalyst'].forEach(type => {
+        const slotCard = document.getElementById(`progress-${type}-card`);
+        slotCard.innerHTML = '<span class="sp-diamond"></span>';
+        slotCard.classList.remove('filled');
+        document.getElementById(`progress-${type}`).classList.remove('completed');
+        document.getElementById(`progress-${type}`).querySelector('.progress-slot-label').textContent = capitalize(type);
+    });
+    document.querySelectorAll('.progress-connector').forEach(c => c.classList.remove('filled'));
+    document.querySelectorAll('.progress-popover').forEach(p => p.remove());
+
+    // Reset path screens to Phase 1
+    ['legacy', 'bond', 'catalyst'].forEach(type => {
+        const grid = document.getElementById(`${type}-grid`);
+        const promoted = document.getElementById(`${type}-promoted`);
+        const desc = document.getElementById(`${type}-description`);
+        const p1nav = document.getElementById(`${type}-phase1-nav`);
+        const p2nav = document.getElementById(`${type}-phase2-nav`);
+
+        grid.style.display = '';
+        grid.innerHTML = '';
+        promoted.style.display = 'none';
+        promoted.innerHTML = '';
+        desc.style.display = 'none';
+        desc.classList.remove('active');
+        p1nav.style.display = '';
+        p2nav.style.display = 'none';
+
+        document.getElementById(`${type}-confirm`).disabled = true;
+        document.getElementById(`${type}-confirm`).textContent = 'Confirm Selection (0/3)';
+        document.getElementById(`${type}-next`).disabled = true;
+    });
+
+    showScreen('intro-screen');
+}
+
+// ══════════════════════════════════════════════════
+// ── Initialization ──
+// ══════════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    // Intro → Legacy
+    document.getElementById('start-btn').addEventListener('click', () => {
+        showScreen('legacy-screen');
+        populateCardGrid('legacy');
+    });
+
+    // Legacy Phase 1 → Phase 2
+    document.getElementById('legacy-confirm').addEventListener('click', () => enterPhase2('legacy'));
+    document.getElementById('legacy-back-fan').addEventListener('click', () => exitPhase2('legacy'));
+    document.getElementById('legacy-next').addEventListener('click', () => {
+        updateProgressBar('legacy', app.finalLegacyCard);
+        showScreen('bond-screen');
+        populateCardGrid('bond');
+    });
+
+    // Bond Phase 1 → Phase 2
+    document.getElementById('bond-confirm').addEventListener('click', () => enterPhase2('bond'));
+    document.getElementById('bond-back-fan').addEventListener('click', () => exitPhase2('bond'));
+    document.getElementById('bond-next').addEventListener('click', () => {
+        updateProgressBar('bond', app.finalBondCard);
+        showScreen('catalyst-screen');
+        populateCardGrid('catalyst');
+    });
+
+    // Catalyst Phase 1 → Phase 2
+    document.getElementById('catalyst-confirm').addEventListener('click', () => enterPhase2('catalyst'));
+    document.getElementById('catalyst-back-fan').addEventListener('click', () => exitPhase2('catalyst'));
+    document.getElementById('catalyst-next').addEventListener('click', () => {
+        updateProgressBar('catalyst', app.finalCatalystCard);
+        setupCatalystOptions();
+        showScreen('catalyst-options-screen');
+    });
+
+    // Catalyst Options
+    document.getElementById('catalyst-options-back').addEventListener('click', () => {
+        showScreen('catalyst-screen');
+    });
+    document.getElementById('catalyst-options-next').addEventListener('click', () => {
+        populateSummary();
+        showScreen('summary-screen');
+    });
+
+    // Summary
+    document.getElementById('save-btn').addEventListener('click', saveCharacter);
+    document.getElementById('restart-btn').addEventListener('click', resetApp);
+
+    // Progress bar popovers
+    setupProgressPopovers();
+});

@@ -1,9 +1,13 @@
-// Main application data
+// ══════════════════════════════════════════════════
+// Storypath System — Main Application
+// ══════════════════════════════════════════════════
+
+// ── App State ──
+
 const app = {
-    // Track current state
     currentScreen: 'intro-screen',
-    
-    // Card data for each path
+
+    // Card data arrays (20 per path, 60 total)
     legacyCards: [
         { id: 1, title: 'ANEW', image: 'img3587.jpg', description: 'You don\'t remember your past; in fact, you can only recall events that occurred very recently. How do you deal with that blank space? What flashes of recognition offer clues about your past? What questions drive you? Are you looking for answers or is this better?' },
         { id: 2, title: 'BEYOND', image: 'img3588.jpg', description: 'You come from and were forged in places unknown. Who was behind the scenes shaping things to their own design? How did you fit into their plans? Did you embrace or run from those plots? What strange shadows still linger at your back? What lies ahead?' },
@@ -26,7 +30,7 @@ const app = {
         { id: 19, title: 'SANCTUARY', image: 'img3617.jpg', description: 'Your community raised you on hallowed lands as its protector. What required safeguarding? What traditions do you hold dear from that experience? How does your upbringing impact what you see in the world today? What do you carry with you still from there?' },
         { id: 20, title: 'TRANSCEND', image: 'img3618.jpg', description: 'Long ago, your region was the site of a massive extraplanar event. What realms collided and what ensued? What caused it? Are there relics or reminders of what happened around still? What stories do people tell about what happened to this day?' }
     ],
-    
+
     bondCards: [
         { id: 1, title: 'ALLY', image: 'img3637.jpg', description: 'An accomplice whose goals and desires are aligned with your own. What event made you realize the two of you were on the same side? When did you first come to their aid or they to yours? What have you faced together thus far? What do you admire most about the other?' },
         { id: 2, title: 'BELOVED', image: 'img3638.jpg', description: 'Someone who has your heart and admiration entirely and they yours. How did they first catch your eye? What about them draws you in? How long did it take them to return your affection or for you to return theirs? When did you realize they were everything you wanted?' },
@@ -49,177 +53,47 @@ const app = {
         { id: 19, title: 'WATCHER', image: 'img3667.jpg', description: 'One who stands in silent guard over a place worthy of protection. Was this charge given to them by others or did they choose it? What do they defend against? How well do they shoulder this responsibility? What have you seen them accomplish already?' },
         { id: 20, title: 'ZEALOT', image: 'img3668.jpg', description: 'One so deeply ingrained in their beliefs there\'s no bringing them out. What is the main drive behind their fanaticism? What word do they spread? Who do they seek to join them? How did you come to hear them? How have they tried ensnaring you with their zeal?' }
     ],
-    
+
     catalystCards: [
-        { 
-            id: 1, 
-            title: 'A FACTION RISES/A CITY IS SAVED', 
-            image: 'img3697.jpg', 
-            destructive: 'A Faction Rises: They seek dominance, power, and have the will to match their ambitions. Who are they? What are they willing to sacrifice to take control? Who do they look to overthrow? Why are they willing to risk so much now?',
-            constructive: 'A City is Saved: Rescued from dire calamity or imminent crisis by the grace of others. What events led to this moment? Who came to lend aid? Was there a cost owed for their help? What changed for those survivors left picking up the pieces?'
-        },
-        { 
-            id: 2, 
-            title: 'A STORM FALLS/A RESOURCE UNCOVERED', 
-            image: 'img3699.jpg', 
-            destructive: 'A Storm Falls: It catches the region off guard and wreaks havoc. What kind of forces were at work here? What was salvaged and what was destroyed? In the aftermath, how do people move forward? Who is most affected by the devastation?',
-            constructive: 'A Resource Uncovered: It brings great prosperity to those who find it. What is its nature? What bounty does it bring? How is its power harnessed? How does it change those who possess it? What costs or risks come hand in hand with such rewards?'
-        },
-        { 
-            id: 3, 
-            title: 'A LEADER DIES/A LIFE IS SPARED', 
-            image: 'img3701.jpg', 
-            destructive: 'A Leader Dies: They pass well before their time. What upheaval springs from this loss of power and stability? What opportunities arise and for whom? Who steps in to fill the void? Is there conflict over the change or do others rally together in memory of the fallen? Are old traditions maintained, or are new precedents built?',
-            constructive: 'A Life is Spared: Done so in order to stop more bloodshed. Who is saved and why does this act of mercy stave off more violence? Who wanted to spare this life? What does this person do with their second chance? Do they consider themselves indebted after being saved? What ripple effect does it have on the region?'
-        },
-        { 
-            id: 4, 
-            title: 'A REGION VANISHES/A SHRINE APPEARS', 
-            image: 'img3703.jpg', 
-            destructive: 'A Region Vanishes: Gone without a trace and no one left to speak of its whereabouts. What fears are whispered in its absence? What fills the vacuum its loss leaves in the region? Whether it be people, untamed nature, or strange new magics, what disturbances linger about the area?Is there anyone who still looks for it?',
-            constructive: 'A Shrine Appears: As ancient and powerful as it is mysterious. Where does it appear? Who or what does this place venerate? What powers does it bring and what does it come to symbolize to those in its vicinity? What comforts does it offer to those nearest? What is said to have brought it here and do people trust its offerings?'
-        },
-        { 
-            id: 5, 
-            title: 'A CURSE AWAKENS/A BLESSING GIVEN', 
-            image: 'img3708.jpg', 
-            destructive: 'A Curse Awakens: Bestowed long ago with hate and malice but left slumbering for an age. What has awakened it? Was it intentional or an unfortunate accident? What are its effects and who is targeted? What is needed to undo this ancient magic? What now settles over the area holding those under this spell?',
-            constructive: 'A Blessing Given: One offered with hopes of a brighter future. Who is the giver and the receiver of this gift? What powers or protections does this blessing bring with it? Is it done in secret or as a show of might and prowess? Does the one bestowed know they have been changed or do they have a journey of discovery ahead of them?'
-        },
-        { 
-            id: 6, 
-            title: 'A COWARD UNMASKED/AN ACT OF COURAGE', 
-            image: 'img3710.jpg', 
-            destructive: 'A Coward Unmasked: They are revealed along with their misdeeds before everyone. What choices did they attempt to hide? What consequences arose once they were named? Who discovered their duplicity? What harm did their cowardice cause? How do they react to the accusations? What will happen to them now and what damage must be undone?',
-            constructive: 'An Act Of Courage: One so grand that it inspires all who witness it. Who found the will for such bravery in the face of such dire circumstances? What now remains of that person? What did they do to move so many with their actions? What has this act of courage inspired or caused in you? What was lost and what was gained afterwards? How are they remembered?'
-        },
-        { 
-            id: 7, 
-            title: 'DANGER CLOSES IN/SAFE HAVEN OFFERED', 
-            image: 'img3712.jpg', 
-            destructive: 'Danger Closes In: Its arrival is sudden and unexpected, catching many off guard. What forces bring these hazards? Who is threatened most by its arrival? How did these circumstances go undetected for so long? In the face of such a dire moment what is chosen to be lost and what is too precious to leave behind?',
-            constructive: 'Safe Haven Offered: In a moment of uncertainty sanctuary it is graciously given. Who was most in need of help? What did they require protection from? What help did they receive and what state do they find themselves in now? For the ones that were able to provide such assistance where are they now? Does a threat still linger?'
-        },
-        { 
-            id: 8, 
-            title: 'A FRIEND IS LOST/AN ENEMY PARDONED', 
-            image: 'img3714.jpg', 
-            destructive: 'A Friend Is Lost: They are gone with no warning and no means of being saved. Who were they most dear to? What is rumored to be the reason they were lost? Who feels their absence most harshly? Are there those glad to be rid of them? Who is left behind wanting answers as to what happend?',
-            constructive: 'An Enemy Pardoned: It is done so against the advice of many. Who was granted this grace and what were their misdeeds? What is the argument for and against such leniency? What happens when they escape justice in these lands? What cycle is attempting to be broken by this?'
-        },
-        { 
-            id: 9, 
-            title: 'A FOE REVEALED/AN ALLIANCE FORGED', 
-            image: 'img3719.jpg', 
-            destructive: 'A Foe Revealed: One unknown and unexpected. Who are they in these lands? What made them show their hand? What makes them an adversary? Why act now? What do they hope for most by burning their cover? What are they willing to do to succeed in their aims now that their secret has been revealed?',
-            constructive: 'An Alliance Forged: In the midst of conflict, cooler heads can prevail. What dangers are so great that other quarrels can be set aside in favor of self preservation? What do both sides give up by aligning interests? What do they each risk? How more likely is success in the face of banding together? Will such comradery prevail?'
-        },
-        { 
-            id: 10, 
-            title: 'A TREASURE STOLEN/A RELIC RETURNED', 
-            image: 'img3721.jpg', 
-            destructive: 'A Treasure Stolen: It vanished without a trace from a location thought impenetrable. What was the object taken? What significance does it hold and how important is it to the ones who were its protectors? What does this loss signify? What efforts are underway to recover it? Where is it whispered to be being held and what will happen if it is not found and returned?',
-            constructive: 'A Relic Returned: Brought back by those most unlikely. Who returned it and what does this act of generosity herald? What boon is given to those who saw to its homecoming? Who was most affected by its loss and for how long has it been missing? What power does this item hold in the hands of its rightful owner? Now that it is back, what change is felt by its presence once more?'
-        },
-        { 
-            id: 11, 
-            title: 'A LIE BELIEVED/A TRUTH UNEARTHED', 
-            image: 'img3723.jpg', 
-            destructive: 'A Lie Believed: Deceit and slander are poisons with few remedies. What falsehoods were made to sound like truths here? What was the fallout of such misinformation being believed to be genuine? Who was most affected and were they an intended or accidental casualty? Were there those who wanted to believe?',
-            constructive: 'A Truth Unearthed: Long rumored but finally proven beyond all shadow of a doubt. Who finally verified such important information and how did they uncover the truth? What does this revelation bring to light? What narratives does it now threaten to rewrite? What things must change in the face of such a discovery? Who still doubts?'
-        },
-        { 
-            id: 12, 
-            title: 'DARKNESS LOOMS/LIGHT BECKONS', 
-            image: 'img3725.jpg', 
-            destructive: 'Darkness Looms: It threatens to devour much within its reach if left unchecked. Is it the peril of mortals, beasts or magic that brings such threats in its wake? Who is in danger of being engulfed by this expanse? Is this force wielded with intention, is it untamed, or is its source unknown? What do people fear most as it moves closer? Who is turned on first in the ensuing panic?',
-            constructive: 'Light Beckons: It is a welcome refuge in uncertain and dangerous times. Who offers this sanctuary in these bleak and uncertain days and who is in need of it? By what power are they able to offer protection? What benefits are given to those within its aura? What monstrosities does it keep at bay? For how long will this respite last and what happens if and when time runs out?'
-        },
-        { 
-            id: 13, 
-            title: 'KNOWLEDGE LOST/TECHNOLOGY GIFTED', 
-            image: 'img3730.jpg', 
-            destructive: 'Knowledge Lost: Once gone, it is a loss felt for generations. How was such wisdom forgotten or made to be misplaced? What machinations caused such an unimaginable thing to happen? What fallout was there in the cloud cast by such absence? Is there any hope for its recovery or is such lore lost forever? Are there any left who still remember pieces of what was once known?',
-            constructive: 'Technology Gifted: An offer freely given with no expectation of anything in return. Who was able to so generously give such advancements and to whom were they given? What were the nature of such sciences and what effects did their presence have on the ones who received them? What change do they herald? How do those consequences ripple ever outward?'
-        },
-        { 
-            id: 14, 
-            title: 'A HARD CHOICE/AN AVOIDED MISTAKE', 
-            image: 'img3732.jpg', 
-            destructive: 'A Hard Choice: Dire circumstances often present the worst of options, but decisions must be made. Who was forced to choose and what were they made to choose between? What did they sacrifice and what did they save? How were they put in such a position? What was left after their decision was made and have they lived to regret it? Do others fault them for choosing at all?',
-            constructive: 'An Avoided Mistake: Some more difficult to side step than others. What circumstances led to this moment of chance and near disaster? Who came so close to this blunder and what helped them to steer clear of it? Was this an accident or was it intentionally placed along their path? What fate would have awaited them had their luck been less? Are they still so lucky?'
-        },
-        { 
-            id: 15, 
-            title: 'A DYNASTY DIMINISHED/A HERO EMERGES', 
-            image: 'img3734.jpg', 
-            destructive: 'A Dynasty Diminished: All things, even empires, eventually come to an end. Who\'s story came to a close and what moved them to finally fall? What does this absence of order bring about in the surrounding regions? Who felt this power vacuum the hardest? What new structures of power were built up after this collapse? Who benefited most from such turmoil?',
-            constructive: 'A Hero Emerges: Asked for or not; they have arrived. What challenge do they set themselves against? Why did they choose to act when others did not? Is there something that makes them particularly well suited to this challenge? What order or chaos did their actions bring about? What is public opinion of them? Were they victorious or is their fate not yet decided?'
-        },
-        { 
-            id: 16, 
-            title: 'A PLACE HIDDEN/A REALM REVITALIZED', 
-            image: 'img3736.jpg', 
-            destructive: 'A Place Hidden: The decision was made to protect a secret from getting out and endangering others. Who is protected by keeping such information quiet? By what manner of magic or might is a location obscured from sight and memory? Who was chosen to carry this weight? What cost is there in concealing this place from the rest of the world and what does it take to sustain such workings?',
-            constructive: 'A Realm Revitalized: With enough time almost any wound can be healed. By what force was this land first damaged and what has been done to aid in its mending? How much time did such work take? Who championed this endeavor? Was the injury healed entirely or do scars still remain as a reminder to the hurt once caused? What new thing now grows here? What lesson was learned in those lands and at what cost?'
-        },
-        { 
-            id: 17, 
-            title: 'A TRAP SPRUNG/A CAGE BROKEN', 
-            image: 'img3741.jpg', 
-            destructive: 'A Trap Sprung: Well laid and crafted with patience. Who were the ones devising such a trap and why were they on the hunt? Who was their mark? Why were they targeted? What was the bait used to ensnare them? Did they knowingly walk in or were they unaware of the danger lurking? Now that they\'ve been caught, what fallout follows? What fate awaits them now?',
-            constructive: 'A Cage Broken: No prison can last forever. Who or what was held within this pen and why were they put there? For how long were they confined? Who was their jailer? How did they break from their bonds and did they have help? Once free, what do they seek to do now that their freedom has been won? What wrongs may they seek to right with newly unshackled hands?'
-        },
-        { 
-            id: 18, 
-            title: 'A CONSPIRACY FOILED/AN EXPERIMENT SUCCEEDS', 
-            image: 'img3743.jpg', 
-            destructive: 'A Conspiracy Foiled: The best-laid plans never account for every factor. Who was behind these schemes and what was their aim? Who was the focus of their plot and what did they hope to achieve? How were their machinations interrupted and who is to blame for doing so? What consequences follow in the wake of such utter failure? Will they try again?',
-            constructive: 'An Experiment Succeeds: Sometimes even the highest of risks is worth the reward. Who was behind this enterprise? What great workings did they achieve and what peril did they dance close to in doing so? Why were they driven to attempt such a volatile undertaking? Once they succeeded, what did they unleash? Are they still in control of the thing they created?'
-        },
-        { 
-            id: 19, 
-            title: 'AN OPPORTUNITY MISSED/A CHANCE TAKEN', 
-            image: 'img3745.jpg', 
-            destructive: 'An Opportunity Missed: Inaction is still a choice, even if it doesn\'t feel like one. Who missed this moment and was unable to move when opportunity presented itself? What stood to be gained and what did they lose out on? What made them freeze when others might have chosen to act? What was the cost of such inaction to them or those around them? What regret is left in their empty hands? What price was paid?',
-            constructive: 'A Chance Taken: Even when you know the odds some things are worth leaving for fate to decide. What situation led to so much being put on the line with no certainty of success? What was wagered in the balance of such dire odds? Who took it upon themselves to risk so much and what reward did they hope for? Was this gamble ultimately worth it? What could have happened had things gone terribly wrong?'
-        },
-        { 
-            id: 20, 
-            title: 'A PROPHECY IGNORED/A WISH GRANTED', 
-            image: 'img3747.jpg', 
-            destructive: 'A Prophecy Ignored: Those who choose to disregard it can never be made to listen once it comes to pass. Who turned their backs on these predictions? What was foretold to happen and how much warning was given? Who made such divinations and why did they go unheeded? What was the cost once such augury came to be and what remains since there were none who stood to prevent it?',
-            constructive: 'A Wish Granted: With the power to rewrite reality there is no more creative or destructive force than that of a wish. Who was the giver and who received such an unfathomable gift? What was it they wished for? What had to change in order to make such a thing real? Was the reality of their desire everything they wanted or did they live to regret ever asking for it? What happens when you get what you ask for?'
-        }
+        { id: 1, title: 'A FACTION RISES/A CITY IS SAVED', image: 'img3697.jpg', destructive: 'A Faction Rises: They seek dominance, power, and have the will to match their ambitions. Who are they? What are they willing to sacrifice to take control? Who do they look to overthrow? Why are they willing to risk so much now?', constructive: 'A City is Saved: Rescued from dire calamity or imminent crisis by the grace of others. What events led to this moment? Who came to lend aid? Was there a cost owed for their help? What changed for those survivors left picking up the pieces?' },
+        { id: 2, title: 'A STORM FALLS/A RESOURCE UNCOVERED', image: 'img3699.jpg', destructive: 'A Storm Falls: It catches the region off guard and wreaks havoc. What kind of forces were at work here? What was salvaged and what was destroyed? In the aftermath, how do people move forward? Who is most affected by the devastation?', constructive: 'A Resource Uncovered: It brings great prosperity to those who find it. What is its nature? What bounty does it bring? How is its power harnessed? How does it change those who possess it? What costs or risks come hand in hand with such rewards?' },
+        { id: 3, title: 'A LEADER DIES/A LIFE IS SPARED', image: 'img3701.jpg', destructive: 'A Leader Dies: They pass well before their time. What upheaval springs from this loss of power and stability? What opportunities arise and for whom? Who steps in to fill the void? Is there conflict over the change or do others rally together in memory of the fallen? Are old traditions maintained, or are new precedents built?', constructive: 'A Life is Spared: Done so in order to stop more bloodshed. Who is saved and why does this act of mercy stave off more violence? Who wanted to spare this life? What does this person do with their second chance? Do they consider themselves indebted after being saved? What ripple effect does it have on the region?' },
+        { id: 4, title: 'A REGION VANISHES/A SHRINE APPEARS', image: 'img3703.jpg', destructive: 'A Region Vanishes: Gone without a trace and no one left to speak of its whereabouts. What fears are whispered in its absence? What fills the vacuum its loss leaves in the region? Whether it be people, untamed nature, or strange new magics, what disturbances linger about the area? Is there anyone who still looks for it?', constructive: 'A Shrine Appears: As ancient and powerful as it is mysterious. Where does it appear? Who or what does this place venerate? What powers does it bring and what does it come to symbolize to those in its vicinity? What comforts does it offer to those nearest? What is said to have brought it here and do people trust its offerings?' },
+        { id: 5, title: 'A CURSE AWAKENS/A BLESSING GIVEN', image: 'img3708.jpg', destructive: 'A Curse Awakens: Bestowed long ago with hate and malice but left slumbering for an age. What has awakened it? Was it intentional or an unfortunate accident? What are its effects and who is targeted? What is needed to undo this ancient magic? What now settles over the area holding those under this spell?', constructive: 'A Blessing Given: One offered with hopes of a brighter future. Who is the giver and the receiver of this gift? What powers or protections does this blessing bring with it? Is it done in secret or as a show of might and prowess? Does the one bestowed know they have been changed or do they have a journey of discovery ahead of them?' },
+        { id: 6, title: 'A COWARD UNMASKED/AN ACT OF COURAGE', image: 'img3710.jpg', destructive: 'A Coward Unmasked: They are revealed along with their misdeeds before everyone. What choices did they attempt to hide? What consequences arose once they were named? Who discovered their duplicity? What harm did their cowardice cause? How do they react to the accusations? What will happen to them now and what damage must be undone?', constructive: 'An Act Of Courage: One so grand that it inspires all who witness it. Who found the will for such bravery in the face of such dire circumstances? What now remains of that person? What did they do to move so many with their actions? What has this act of courage inspired or caused in you? What was lost and what was gained afterwards? How are they remembered?' },
+        { id: 7, title: 'DANGER CLOSES IN/SAFE HAVEN OFFERED', image: 'img3712.jpg', destructive: 'Danger Closes In: Its arrival is sudden and unexpected, catching many off guard. What forces bring these hazards? Who is threatened most by its arrival? How did these circumstances go undetected for so long? In the face of such a dire moment what is chosen to be lost and what is too precious to leave behind?', constructive: 'Safe Haven Offered: In a moment of uncertainty sanctuary it is graciously given. Who was most in need of help? What did they require protection from? What help did they receive and what state do they find themselves in now? For the ones that were able to provide such assistance where are they now? Does a threat still linger?' },
+        { id: 8, title: 'A FRIEND IS LOST/AN ENEMY PARDONED', image: 'img3714.jpg', destructive: 'A Friend Is Lost: They are gone with no warning and no means of being saved. Who were they most dear to? What is rumored to be the reason they were lost? Who feels their absence most harshly? Are there those glad to be rid of them? Who is left behind wanting answers as to what happened?', constructive: 'An Enemy Pardoned: It is done so against the advice of many. Who was granted this grace and what were their misdeeds? What is the argument for and against such leniency? What happens when they escape justice in these lands? What cycle is attempting to be broken by this?' },
+        { id: 9, title: 'A FOE REVEALED/AN ALLIANCE FORGED', image: 'img3719.jpg', destructive: 'A Foe Revealed: One unknown and unexpected. Who are they in these lands? What made them show their hand? What makes them an adversary? Why act now? What do they hope for most by burning their cover? What are they willing to do to succeed in their aims now that their secret has been revealed?', constructive: 'An Alliance Forged: In the midst of conflict, cooler heads can prevail. What dangers are so great that other quarrels can be set aside in favor of self preservation? What do both sides give up by aligning interests? What do they each risk? How more likely is success in the face of banding together? Will such comradery prevail?' },
+        { id: 10, title: 'A TREASURE STOLEN/A RELIC RETURNED', image: 'img3721.jpg', destructive: 'A Treasure Stolen: It vanished without a trace from a location thought impenetrable. What was the object taken? What significance does it hold and how important is it to the ones who were its protectors? What does this loss signify? What efforts are underway to recover it? Where is it whispered to be being held and what will happen if it is not found and returned?', constructive: 'A Relic Returned: Brought back by those most unlikely. Who returned it and what does this act of generosity herald? What boon is given to those who saw to its homecoming? Who was most affected by its loss and for how long has it been missing? What power does this item hold in the hands of its rightful owner? Now that it is back, what change is felt by its presence once more?' },
+        { id: 11, title: 'A LIE BELIEVED/A TRUTH UNEARTHED', image: 'img3723.jpg', destructive: 'A Lie Believed: Deceit and slander are poisons with few remedies. What falsehoods were made to sound like truths here? What was the fallout of such misinformation being believed to be genuine? Who was most affected and were they an intended or accidental casualty? Were there those who wanted to believe?', constructive: 'A Truth Unearthed: Long rumored but finally proven beyond all shadow of a doubt. Who finally verified such important information and how did they uncover the truth? What does this revelation bring to light? What narratives does it now threaten to rewrite? What things must change in the face of such a discovery? Who still doubts?' },
+        { id: 12, title: 'DARKNESS LOOMS/LIGHT BECKONS', image: 'img3725.jpg', destructive: 'Darkness Looms: It threatens to devour much within its reach if left unchecked. Is it the peril of mortals, beasts or magic that brings such threats in its wake? Who is in danger of being engulfed by this expanse? Is this force wielded with intention, is it untamed, or is its source unknown? What do people fear most as it moves closer? Who is turned on first in the ensuing panic?', constructive: 'Light Beckons: It is a welcome refuge in uncertain and dangerous times. Who offers this sanctuary in these bleak and uncertain days and who is in need of it? By what power are they able to offer protection? What benefits are given to those within its aura? What monstrosities does it keep at bay? For how long will this respite last and what happens if and when time runs out?' },
+        { id: 13, title: 'KNOWLEDGE LOST/TECHNOLOGY GIFTED', image: 'img3730.jpg', destructive: 'Knowledge Lost: Once gone, it is a loss felt for generations. How was such wisdom forgotten or made to be misplaced? What machinations caused such an unimaginable thing to happen? What fallout was there in the cloud cast by such absence? Is there any hope for its recovery or is such lore lost forever? Are there any left who still remember pieces of what was once known?', constructive: 'Technology Gifted: An offer freely given with no expectation of anything in return. Who was able to so generously give such advancements and to whom were they given? What were the nature of such sciences and what effects did their presence have on the ones who received them? What change do they herald? How do those consequences ripple ever outward?' },
+        { id: 14, title: 'A HARD CHOICE/AN AVOIDED MISTAKE', image: 'img3732.jpg', destructive: 'A Hard Choice: Dire circumstances often present the worst of options, but decisions must be made. Who was forced to choose and what were they made to choose between? What did they sacrifice and what did they save? How were they put in such a position? What was left after their decision was made and have they lived to regret it? Do others fault them for choosing at all?', constructive: 'An Avoided Mistake: Some more difficult to side step than others. What circumstances led to this moment of chance and near disaster? Who came so close to this blunder and what helped them to steer clear of it? Was this an accident or was it intentionally placed along their path? What fate would have awaited them had their luck been less? Are they still so lucky?' },
+        { id: 15, title: 'A DYNASTY DIMINISHED/A HERO EMERGES', image: 'img3734.jpg', destructive: 'A Dynasty Diminished: All things, even empires, eventually come to an end. Who\'s story came to a close and what moved them to finally fall? What does this absence of order bring about in the surrounding regions? Who felt this power vacuum the hardest? What new structures of power were built up after this collapse? Who benefited most from such turmoil?', constructive: 'A Hero Emerges: Asked for or not; they have arrived. What challenge do they set themselves against? Why did they choose to act when others did not? Is there something that makes them particularly well suited to this challenge? What order or chaos did their actions bring about? What is public opinion of them? Were they victorious or is their fate not yet decided?' },
+        { id: 16, title: 'A PLACE HIDDEN/A REALM REVITALIZED', image: 'img3736.jpg', destructive: 'A Place Hidden: The decision was made to protect a secret from getting out and endangering others. Who is protected by keeping such information quiet? By what manner of magic or might is a location obscured from sight and memory? Who was chosen to carry this weight? What cost is there in concealing this place from the rest of the world and what does it take to sustain such workings?', constructive: 'A Realm Revitalized: With enough time almost any wound can be healed. By what force was this land first damaged and what has been done to aid in its mending? How much time did such work take? Who championed this endeavor? Was the injury healed entirely or do scars still remain as a reminder to the hurt once caused? What new thing now grows here? What lesson was learned in those lands and at what cost?' },
+        { id: 17, title: 'A TRAP SPRUNG/A CAGE BROKEN', image: 'img3741.jpg', destructive: 'A Trap Sprung: Well laid and crafted with patience. Who were the ones devising such a trap and why were they on the hunt? Who was their mark? Why were they targeted? What was the bait used to ensnare them? Did they knowingly walk in or were they unaware of the danger lurking? Now that they\'ve been caught, what fallout follows? What fate awaits them now?', constructive: 'A Cage Broken: No prison can last forever. Who or what was held within this pen and why were they put there? For how long were they confined? Who was their jailer? How did they break from their bonds and did they have help? Once free, what do they seek to do now that their freedom has been won? What wrongs may they seek to right with newly unshackled hands?' },
+        { id: 18, title: 'A CONSPIRACY FOILED/AN EXPERIMENT SUCCEEDS', image: 'img3743.jpg', destructive: 'A Conspiracy Foiled: The best-laid plans never account for every factor. Who was behind these schemes and what was their aim? Who was the focus of their plot and what did they hope to achieve? How were their machinations interrupted and who is to blame for doing so? What consequences follow in the wake of such utter failure? Will they try again?', constructive: 'An Experiment Succeeds: Sometimes even the highest of risks is worth the reward. Who was behind this enterprise? What great workings did they achieve and what peril did they dance close to in doing so? Why were they driven to attempt such a volatile undertaking? Once they succeeded, what did they unleash? Are they still in control of the thing they created?' },
+        { id: 19, title: 'AN OPPORTUNITY MISSED/A CHANCE TAKEN', image: 'img3745.jpg', destructive: 'An Opportunity Missed: Inaction is still a choice, even if it doesn\'t feel like one. Who missed this moment and was unable to move when opportunity presented itself? What stood to be gained and what did they lose out on? What made them freeze when others might have chosen to act? What was the cost of such inaction to them or those around them? What regret is left in their empty hands? What price was paid?', constructive: 'A Chance Taken: Even when you know the odds some things are worth leaving for fate to decide. What situation led to so much being put on the line with no certainty of success? What was wagered in the balance of such dire odds? Who took it upon themselves to risk so much and what reward did they hope for? Was this gamble ultimately worth it? What could have happened had things gone terribly wrong?' },
+        { id: 20, title: 'A PROPHECY IGNORED/A WISH GRANTED', image: 'img3747.jpg', destructive: 'A Prophecy Ignored: Those who choose to disregard it can never be made to listen once it comes to pass. Who turned their backs on these predictions? What was foretold to happen and how much warning was given? Who made such divinations and why did they go unheeded? What was the cost once such augury came to be and what remains since there were none who stood to prevent it?', constructive: 'A Wish Granted: With the power to rewrite reality there is no more creative or destructive force than that of a wish. Who was the giver and who received such an unfathomable gift? What was it they wished for? What had to change in order to make such a thing real? Was the reality of their desire everything they wanted or did they live to regret ever asking for it? What happens when you get what you ask for?' }
     ],
-    
-    // Selected cards
+
+    // Selection state
     selectedLegacyCards: [],
     selectedBondCards: [],
     selectedCatalystCards: [],
-    
-    // Final selections
     finalLegacyCard: null,
     finalBondCard: null,
     finalCatalystCard: null,
-    
-    // Catalyst choice
     catalystChoice: null,
+
+    // UI phase per path: 'fan' or 'promoted'
+    legacyPhase: 'fan',
+    bondPhase: 'fan',
+    catalystPhase: 'fan',
 };
 
-// Helper functions
-function showScreen(screenId) {
-    // Hide all screens
-    document.querySelectorAll('.screen').forEach(screen => {
-        screen.classList.remove('active');
-    });
-    
-    // Show the specified screen
-    document.getElementById(screenId).classList.add('active');
-    app.currentScreen = screenId;
-}
+// ── Catalyst Image Map ──
 
-// Map catalyst card titles to correct image filenames
 const catalystImageMap = {
     'A FACTION RISES/A CITY IS SAVED': 'faction_city',
     'A STORM FALLS/A RESOURCE UNCOVERED': 'storm_resource',
@@ -243,316 +117,14 @@ const catalystImageMap = {
     'A PROPHECY IGNORED/A WISH GRANTED': 'prophecy_wish'
 };
 
-function createCard(card, type, isSelectable = true, isSelected = false) {
-    const cardElement = document.createElement('div');
-    cardElement.className = `card${isSelected ? ' selected flipped' : ''}`;
-    cardElement.dataset.id = card.id;
-    cardElement.dataset.type = type;
-    
-    // Use updated image path with new naming convention
-    let imagePath;
-    switch(type) {
-        case 'legacy':
-            imagePath = `Images/legacy_${card.title.toLowerCase()}.jpg`;
-            break;
-        case 'bond':
-            imagePath = `Images/bond_${card.title.toLowerCase()}.jpg`;
-            break;
-        case 'catalyst':
-            // Use the mapping instead of generating from title
-            const mappedName = catalystImageMap[card.title];
-            imagePath = `Images/catalyst_${mappedName}.jpg`;
-            break;
-    }
-    
-    // Create the card structure for flip animation
-    cardElement.innerHTML = `
-        <div class="card-inner">
-            <div class="card-back"></div>
-            <div class="card-front">
-                <img src="${imagePath}" alt="${card.title}">
-            </div>
-        </div>
-    `;
-    
-    if (isSelectable) {
-        cardElement.addEventListener('click', cardClickHandler);
-    }
-    
-    return cardElement;
-}
+// ── Utility Functions ──
 
-function createFinalCard(card, type, isSelectable = true, isSelected = false) {
-    const cardContainer = document.createElement('div');
-    cardContainer.className = 'final-card-container';
-    cardContainer.dataset.id = card.id;
-    
-    const cardElement = document.createElement('div');
-    cardElement.className = `final-card${isSelected ? ' selected' : ''}`;
-    cardElement.dataset.id = card.id;
-    cardElement.dataset.type = type;
-    
-    // Use updated image path with new naming convention
-    let imagePath;
-    switch(type) {
-        case 'legacy':
-            imagePath = `Images/legacy_${card.title.toLowerCase()}.jpg`;
-            break;
-        case 'bond':
-            imagePath = `Images/bond_${card.title.toLowerCase()}.jpg`;
-            break;
-        case 'catalyst':
-            // Use the mapping instead of generating from title
-            const mappedName = catalystImageMap[card.title];
-            imagePath = `Images/catalyst_${mappedName}.jpg`;
-            break;
-    }
-    
-    cardElement.innerHTML = `
-        <div class="final-card-front">
-            <img src="${imagePath}" alt="${card.title}">
-        </div>
-        <div class="final-card-back"></div>
-    `;
-    
-    cardContainer.appendChild(cardElement);
-    
-    if (isSelectable) {
-        cardElement.addEventListener('click', finalCardClickHandler);
-        
-        // Add hover effect to show description
-        cardElement.addEventListener('mouseenter', function() {
-            showCardDescription(type, card);
-        });
-    }
-    
-    return cardContainer;
-}
-
-function showCardDescription(type, card) {
-    const titleElement = document.getElementById(`${type}-description-title`);
-    const textElement = document.getElementById(`${type}-description-text`);
-    const descriptionElement = document.getElementById(`${type}-card-description`);
-    
-    // Set the title and description
-    titleElement.textContent = card.title;
-    
-    // For catalyst cards, show both options
+function getImagePath(card, type) {
     if (type === 'catalyst') {
-        textElement.innerHTML = `
-            <strong>Destructive:</strong> ${card.destructive}<br><br>
-            <strong>Constructive:</strong> ${card.constructive}
-        `;
-    } else {
-        textElement.textContent = card.description;
+        const mapped = catalystImageMap[card.title];
+        return `Images/catalyst_${mapped}.jpg`;
     }
-    
-    // Show the description
-    descriptionElement.classList.add('active');
-}
-
-function cardClickHandler(event) {
-    const cardElement = event.currentTarget;
-    const cardId = parseInt(cardElement.dataset.id);
-    const cardType = cardElement.dataset.type;
-    
-    let selectedCards, maxSelectionCount;
-    
-    // Determine which card collection to work with
-    switch (cardType) {
-        case 'legacy':
-            selectedCards = app.selectedLegacyCards;
-            maxSelectionCount = 3;
-            break;
-        case 'bond':
-            selectedCards = app.selectedBondCards;
-            maxSelectionCount = 3;
-            break;
-        case 'catalyst':
-            selectedCards = app.selectedCatalystCards;
-            maxSelectionCount = 3;
-            break;
-    }
-    
-    // Check if card is already selected
-    const cardIndex = selectedCards.findIndex(card => card.id === cardId);
-    
-    if (cardIndex === -1) {
-        // Card is not selected, try to add it
-        if (selectedCards.length < maxSelectionCount) {
-            // Add card to selected collection
-            const card = app[`${cardType}Cards`].find(card => card.id === cardId);
-            selectedCards.push(card);
-            
-            // Flip the card and pop it out of the fan
-            cardElement.classList.add('flipped');
-            cardElement.style.transform = `rotate(0deg) translateY(-50px) scale(1.25)`;
-            cardElement.style.zIndex = '300';
-
-            // After flip animation finishes, add selected class
-            setTimeout(() => {
-                cardElement.classList.add('selected');
-            }, 400);
-        }
-    } else {
-        // Card is already selected, remove it
-        selectedCards.splice(cardIndex, 1);
-        
-        // Remove selected class first
-        cardElement.classList.remove('selected');
-
-        // Return card to its fan position and flip back
-        cardElement.style.transform = `rotate(${cardElement.dataset.fanAngle}deg)`;
-        cardElement.style.zIndex = cardElement.dataset.fanZ;
-
-        setTimeout(() => {
-            cardElement.classList.remove('flipped');
-        }, 50);
-    }
-    
-    // Update confirm button state and text
-    updateConfirmButton(cardType, selectedCards.length, maxSelectionCount);
-}
-
-function finalCardClickHandler(event) {
-    const cardElement = event.currentTarget;
-    const cardId = parseInt(cardElement.dataset.id);
-    const cardType = cardElement.dataset.type;
-    
-    // Remove selection from all cards
-    document.querySelectorAll(`.final-card[data-type="${cardType}"]`).forEach(card => {
-        card.classList.remove('selected');
-    });
-    
-    // Select the clicked card
-    cardElement.classList.add('selected');
-    
-    // Set the final card selection
-    const card = app[`selected${cardType.charAt(0).toUpperCase() + cardType.slice(1)}Cards`].find(card => card.id === cardId);
-    app[`final${cardType.charAt(0).toUpperCase() + cardType.slice(1)}Card`] = card;
-    
-    // Show the card description
-    showCardDescription(cardType, card);
-    
-    // Enable the next button
-    document.getElementById(`${cardType}-next`).disabled = false;
-}
-
-function updateConfirmButton(cardType, selectedCount, maxCount) {
-    const button = document.getElementById(`${cardType}-confirm`);
-    button.textContent = `Confirm Selection (${selectedCount}/${maxCount})`;
-    button.disabled = selectedCount !== maxCount;
-}
-
-function applyFanLayout(gridElement) {
-    const cards = Array.from(gridElement.querySelectorAll('.card'));
-    const n = cards.length;
-    if (n === 0) return;
-
-    const containerWidth = gridElement.offsetWidth;
-
-    // Card width adapts to container — leave room for the arc spread
-    const cardWidth = Math.min(120, containerWidth / 12);
-    const cardHeight = Math.round(cardWidth * 1431 / 867);
-
-    // Arc parameters
-    const totalArc = 100; // degrees total spread
-    const halfArc = totalArc / 2;
-    const halfArcRad = (halfArc * Math.PI) / 180;
-
-    // Radius sized so outermost card stays on-screen
-    const maxX = containerWidth / 2 - cardWidth / 2 - 10;
-    const radius = maxX / Math.sin(halfArcRad);
-
-    // Container height: arc rise + card height + padding
-    const arcHeight = radius * (1 - Math.cos(halfArcRad));
-    const containerHeight = arcHeight + cardHeight + 60;
-    gridElement.style.height = containerHeight + 'px';
-
-    // Pivot point (virtual hand position below visible area)
-    const pivotX = containerWidth / 2;
-    const pivotY = containerHeight - 20 + radius * Math.cos(halfArcRad);
-
-    cards.forEach((card, i) => {
-        const angle = -halfArc + (i / (n - 1)) * totalArc;
-        const angleRad = (angle * Math.PI) / 180;
-
-        const x = pivotX + radius * Math.sin(angleRad) - cardWidth / 2;
-        const y = pivotY - radius * Math.cos(angleRad) - cardHeight;
-
-        // Center cards get higher z-index (on top of the stack)
-        const zIndex = Math.round(n / 2 - Math.abs(i - n / 2));
-
-        card.style.width = cardWidth + 'px';
-        card.style.height = cardHeight + 'px';
-        card.style.left = x + 'px';
-        card.style.top = y + 'px';
-        card.style.zIndex = zIndex;
-        card.style.transform = `rotate(${angle}deg)`;
-
-        card.dataset.fanAngle = angle;
-        card.dataset.fanX = x;
-        card.dataset.fanY = y;
-        card.dataset.fanZ = zIndex;
-    });
-
-    // Hover: straighten and lift the card
-    gridElement.addEventListener('mouseenter', function(e) {
-        const card = e.target.closest('.card');
-        if (!card || card.classList.contains('selected')) return;
-        card.style.transform = `rotate(0deg) translateY(-30px) scale(1.2)`;
-        card.style.zIndex = '200';
-    }, true);
-
-    gridElement.addEventListener('mouseleave', function(e) {
-        const card = e.target.closest('.card');
-        if (!card || card.classList.contains('selected')) return;
-        card.style.transform = `rotate(${card.dataset.fanAngle}deg)`;
-        card.style.zIndex = card.dataset.fanZ;
-    }, true);
-}
-
-function populateCardGrid(cardType) {
-    const gridElement = document.getElementById(`${cardType}-grid`);
-    gridElement.innerHTML = '';
-
-    // Get the cards and shuffle them
-    const cards = [...app[`${cardType}Cards`]];
-    shuffleArray(cards);
-
-    // Create and add cards to the grid
-    cards.forEach(card => {
-        const isSelected = app[`selected${cardType.charAt(0).toUpperCase() + cardType.slice(1)}Cards`].some(selectedCard => selectedCard.id === card.id);
-        const cardElement = createCard(card, cardType, true, isSelected);
-        gridElement.appendChild(cardElement);
-    });
-
-    // Apply dynamic fan layout based on actual card count
-    applyFanLayout(gridElement);
-}
-
-function populateFinalSelection(cardType) {
-    const selectionElement = document.getElementById(`${cardType}-final-selection`);
-    selectionElement.innerHTML = '';
-    
-    const selectedCards = app[`selected${cardType.charAt(0).toUpperCase() + cardType.slice(1)}Cards`];
-    
-    // Reset card description
-    const descriptionElem = document.getElementById(`${cardType}-card-description`);
-    descriptionElem.classList.remove('active');
-    
-    // Create and add final selection cards
-    selectedCards.forEach(card => {
-        const isSelected = app[`final${cardType.charAt(0).toUpperCase() + cardType.slice(1)}Card`] && 
-                           app[`final${cardType.charAt(0).toUpperCase() + cardType.slice(1)}Card`].id === card.id;
-        const cardElement = createFinalCard(card, cardType, true, isSelected);
-        selectionElement.appendChild(cardElement);
-        
-        // If card is already selected, show its description
-        if (isSelected) {
-            showCardDescription(cardType, card);
-        }
-    });
+    return `Images/${type}_${card.title.toLowerCase()}.jpg`;
 }
 
 function shuffleArray(array) {
@@ -562,296 +134,19 @@ function shuffleArray(array) {
     }
 }
 
-function setupCatalystOptions() {
-    const card = app.finalCatalystCard;
-    if (!card) return;
-    
-    // Use the mapping instead of generating from title
-    const mappedName = catalystImageMap[card.title];
-    const imagePath = `Images/catalyst_${mappedName}.jpg`;
-    
-    // For debugging
-    console.log(`Title: ${card.title}, Image Path: ${imagePath}`);
-    
-    // Display the card image
-    const cardDisplay = document.querySelector('#catalyst-card-display .final-card');
-    cardDisplay.querySelector('.final-card-front').innerHTML = `<img src="${imagePath}" alt="${card.title}" style="width:100%; height:100%; object-fit:cover; object-position:center; display:block;">`;
-    
-    // Set the option texts
-    document.getElementById('destructive-text').textContent = card.destructive;
-    document.getElementById('constructive-text').textContent = card.constructive;
-    
-    // Reset selections
-    document.querySelectorAll('.option-card').forEach(option => {
-        option.classList.remove('selected');
-    });
-    
-    // Reset the continue button
-    document.getElementById('catalyst-options-next').disabled = true;
-    
-    // Setup event listeners for options
-    document.querySelectorAll('.option-btn').forEach(button => {
-        button.addEventListener('click', function() {
-            // Remove selection from all options
-            document.querySelectorAll('.option-card').forEach(option => {
-                option.classList.remove('selected');
-            });
-            
-            // Select the chosen option
-            this.closest('.option-card').classList.add('selected');
-            
-            // Store the choice
-            app.catalystChoice = this.dataset.type;
-            
-            // Enable the continue button
-            document.getElementById('catalyst-options-next').disabled = false;
-        });
-    });
-    
-    // Don't auto-flip the card - will be done on click
-    // Add click event to flip card
-    cardDisplay.addEventListener('click', function() {
-        if (!this.classList.contains('flipped')) {
-            this.classList.add('flipped');
-        } else {
-            this.classList.remove('flipped');
-        }
-    });
+function showScreen(screenId) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+    app.currentScreen = screenId;
+
+    // Show/hide progress bar
+    const progressBar = document.getElementById('progress-bar');
+    progressBar.classList.toggle('visible', screenId !== 'intro-screen');
+
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function populateSummary() {
-    if (!app.finalLegacyCard || !app.finalBondCard || !app.finalCatalystCard || !app.catalystChoice) {
-        return;
-    }
-    
-    // Set Legacy summary with updated image paths
-    const legacyImagePath = `Images/legacy_${app.finalLegacyCard.title.toLowerCase()}.jpg`;
-    document.getElementById('summary-legacy-card').innerHTML = `<img src="${legacyImagePath}" alt="${app.finalLegacyCard.title}" style="width:100%; height:100%; object-fit:cover; object-position:center; display:block;">`;
-    document.getElementById('summary-legacy-title').textContent = app.finalLegacyCard.title;
-    document.getElementById('summary-legacy-text').textContent = app.finalLegacyCard.description;
-    
-    // Set Bond summary with updated image paths
-    const bondImagePath = `Images/bond_${app.finalBondCard.title.toLowerCase()}.jpg`;
-    document.getElementById('summary-bond-card').innerHTML = `<img src="${bondImagePath}" alt="${app.finalBondCard.title}" style="width:100%; height:100%; object-fit:cover; object-position:center; display:block;">`;
-    document.getElementById('summary-bond-title').textContent = app.finalBondCard.title;
-    document.getElementById('summary-bond-text').textContent = app.finalBondCard.description;
-    
-    // Set Catalyst summary with updated image paths
-    const mappedName = catalystImageMap[app.finalCatalystCard.title];
-    const catalystImagePath = `Images/catalyst_${mappedName}.jpg`;
-    console.log("Summary catalyst image path:", catalystImagePath);
-    document.getElementById('summary-catalyst-card').innerHTML = `<img src="${catalystImagePath}" alt="${app.finalCatalystCard.title}" style="width:100%; height:100%; object-fit:cover; object-position:center; display:block;">`;
-    document.getElementById('summary-catalyst-title').textContent = app.finalCatalystCard.title.split('/')[app.catalystChoice === 'destructive' ? 0 : 1].trim();
-    document.getElementById('summary-catalyst-text').textContent = app.finalCatalystCard[app.catalystChoice];
-    
-    // Add staggered entrance animation to summary cards
-    const summaryCards = document.querySelectorAll('.summary-card');
-    summaryCards.forEach((card, index) => {
-        // First set initial state
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(50px)';
-        card.style.transition = 'none';
-        
-        // Then add the animation after a staggered delay
-        setTimeout(() => {
-            card.style.transition = 'opacity 0.8s ease, transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0) rotateY(0deg)';
-        }, 300 + (index * 200));
-    });
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
 }
-
-function saveCharacter() {
-    const characterNotes = document.getElementById('character-notes-input').value;
-    
-    // Create a character object with all selections
-    const character = {
-        legacy: {
-            title: app.finalLegacyCard.title,
-            description: app.finalLegacyCard.description,
-            image: app.finalLegacyCard.image
-        },
-        bond: {
-            title: app.finalBondCard.title,
-            description: app.finalBondCard.description,
-            image: app.finalBondCard.image
-        },
-        catalyst: {
-            title: app.finalCatalystCard.title.split('/')[app.catalystChoice === 'destructive' ? 0 : 1].trim(),
-            description: app.finalCatalystCard[app.catalystChoice],
-            image: app.finalCatalystCard.image,
-            type: app.catalystChoice
-        },
-        notes: characterNotes
-    };
-    
-    // Then create a PDF with a nicer layout
-    generatePDF(character);
-}
-
-function generatePDF(character) {
-    const { jsPDF } = window.jspdf;
-    
-    // Create a new PDF document
-    const doc = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4',
-    });
-    
-    // Set font
-    doc.setFont('helvetica', 'normal');
-    
-    // Add title
-    doc.setFontSize(24);
-    doc.setTextColor(94, 53, 177); // Use primary color
-    doc.text('Storypath Character', 105, 20, { align: 'center' });
-    
-    // Add divider
-    doc.setDrawColor(94, 53, 177);
-    doc.setLineWidth(0.5);
-    doc.line(20, 25, 190, 25);
-    
-    // Add subtitle
-    doc.setFontSize(16);
-    doc.setTextColor(66, 66, 66);
-    
-    // Legacy section
-    const yStart = 40;
-    doc.setFontSize(18);
-    doc.setTextColor(94, 53, 177); 
-    doc.text('Legacy: ' + character.legacy.title, 20, yStart);
-    
-    doc.setFontSize(12);
-    doc.setTextColor(33, 33, 33);
-    const legacyLines = doc.splitTextToSize(character.legacy.description, 170);
-    doc.text(legacyLines, 20, yStart + 10);
-    
-    // Bond section
-    const yBond = yStart + 10 + (legacyLines.length * 7);
-    doc.setFontSize(18);
-    doc.setTextColor(94, 53, 177);
-    doc.text('Bond: ' + character.bond.title, 20, yBond);
-    
-    doc.setFontSize(12);
-    doc.setTextColor(33, 33, 33);
-    const bondLines = doc.splitTextToSize(character.bond.description, 170);
-    doc.text(bondLines, 20, yBond + 10);
-    
-    // Catalyst section
-    const yCatalyst = yBond + 10 + (bondLines.length * 7);
-    doc.setFontSize(18);
-    doc.setTextColor(94, 53, 177);
-    doc.text('Catalyst: ' + character.catalyst.title, 20, yCatalyst);
-    
-    doc.setFontSize(12);
-    doc.setTextColor(33, 33, 33);
-    const catalystLines = doc.splitTextToSize(character.catalyst.description, 170);
-    doc.text(catalystLines, 20, yCatalyst + 10);
-    
-    // Notes section
-    const yNotes = yCatalyst + 10 + (catalystLines.length * 7);
-    if (character.notes && character.notes.trim() !== '') {
-        doc.setFontSize(18);
-        doc.setTextColor(94, 53, 177);
-        doc.text('Character Notes:', 20, yNotes);
-        
-        doc.setFontSize(12);
-        doc.setTextColor(33, 33, 33);
-        const notesLines = doc.splitTextToSize(character.notes, 170);
-        doc.text(notesLines, 20, yNotes + 10);
-    }
-    
-    // Add footer
-    const pageCount = doc.internal.getNumberOfPages();
-    doc.setFontSize(10);
-    doc.setTextColor(100, 100, 100);
-    for (let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.text('Created with Storypath Character System', 105, 290, { align: 'center' });
-        doc.text('Page ' + i + ' of ' + pageCount, 190, 290, { align: 'right' });
-    }
-    
-    // Save the PDF
-    doc.save('storypath-character.pdf');
-}
-
-function resetApp() {
-    // Reset all selections
-    app.selectedLegacyCards = [];
-    app.selectedBondCards = [];
-    app.selectedCatalystCards = [];
-    app.finalLegacyCard = null;
-    app.finalBondCard = null;
-    app.finalCatalystCard = null;
-    app.catalystChoice = null;
-    
-    // Clear the notes field
-    document.getElementById('character-notes-input').value = '';
-    
-    // Go back to the intro screen
-    showScreen('intro-screen');
-}
-
-// Initialize the application
-document.addEventListener('DOMContentLoaded', function() {
-    // Setup button event listeners
-    document.getElementById('start-btn').addEventListener('click', function() {
-        showScreen('legacy-selection');
-        populateCardGrid('legacy');
-    });
-    
-    document.getElementById('legacy-confirm').addEventListener('click', function() {
-        populateFinalSelection('legacy');
-        showScreen('legacy-final');
-    });
-    
-    document.getElementById('legacy-back').addEventListener('click', function() {
-        showScreen('legacy-selection');
-    });
-    
-    document.getElementById('legacy-next').addEventListener('click', function() {
-        showScreen('bond-selection');
-        populateCardGrid('bond');
-    });
-    
-    document.getElementById('bond-confirm').addEventListener('click', function() {
-        populateFinalSelection('bond');
-        showScreen('bond-final');
-    });
-    
-    document.getElementById('bond-back').addEventListener('click', function() {
-        showScreen('bond-selection');
-    });
-    
-    document.getElementById('bond-next').addEventListener('click', function() {
-        showScreen('catalyst-selection');
-        populateCardGrid('catalyst');
-    });
-    
-    document.getElementById('catalyst-confirm').addEventListener('click', function() {
-        populateFinalSelection('catalyst');
-        showScreen('catalyst-final');
-    });
-    
-    document.getElementById('catalyst-back').addEventListener('click', function() {
-        showScreen('catalyst-selection');
-    });
-    
-    document.getElementById('catalyst-next').addEventListener('click', function() {
-        setupCatalystOptions();
-        showScreen('catalyst-options');
-    });
-    
-    document.getElementById('catalyst-options-back').addEventListener('click', function() {
-        showScreen('catalyst-final');
-    });
-    
-    document.getElementById('catalyst-options-next').addEventListener('click', function() {
-        populateSummary();
-        showScreen('character-summary');
-    });
-    
-    document.getElementById('save-btn').addEventListener('click', saveCharacter);
-    document.getElementById('restart-btn').addEventListener('click', resetApp);
-});

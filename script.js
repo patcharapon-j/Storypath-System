@@ -150,3 +150,156 @@ function showScreen(screenId) {
 function capitalize(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+// ══════════════════════════════════════════════════
+// ── Fan Layout & Card Selection (Phase 1) ──
+// ══════════════════════════════════════════════════
+
+function createCard(card, type) {
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.dataset.id = card.id;
+    el.dataset.type = type;
+
+    const imagePath = getImagePath(card, type);
+
+    el.innerHTML = `
+        <div class="card-inner">
+            <div class="card-back"></div>
+            <div class="card-front">
+                <img src="${imagePath}" alt="${card.title}">
+            </div>
+        </div>
+    `;
+
+    el.addEventListener('click', () => handleCardClick(el, card, type));
+    return el;
+}
+
+function applyFanLayout(gridElement) {
+    const cards = Array.from(gridElement.querySelectorAll('.card'));
+    const n = cards.length;
+    if (n === 0) return;
+
+    const containerWidth = gridElement.offsetWidth;
+    const cardWidth = Math.min(120, containerWidth / 12);
+    const cardHeight = Math.round(cardWidth * 1431 / 867);
+
+    const totalArc = 100;
+    const halfArc = totalArc / 2;
+    const halfArcRad = (halfArc * Math.PI) / 180;
+
+    const maxX = containerWidth / 2 - cardWidth / 2 - 10;
+    const radius = maxX / Math.sin(halfArcRad);
+
+    const arcHeight = radius * (1 - Math.cos(halfArcRad));
+    const containerHeight = arcHeight + cardHeight + 60;
+    gridElement.style.height = containerHeight + 'px';
+
+    const pivotX = containerWidth / 2;
+    const pivotY = containerHeight - 20 + radius * Math.cos(halfArcRad);
+
+    cards.forEach((card, i) => {
+        const angle = -halfArc + (i / (n - 1)) * totalArc;
+        const angleRad = (angle * Math.PI) / 180;
+
+        const x = pivotX + radius * Math.sin(angleRad) - cardWidth / 2;
+        const y = pivotY - radius * Math.cos(angleRad) - cardHeight;
+        const zIndex = Math.round(n / 2 - Math.abs(i - n / 2));
+
+        card.style.width = cardWidth + 'px';
+        card.style.height = cardHeight + 'px';
+        card.style.left = x + 'px';
+        card.style.top = y + 'px';
+        card.style.zIndex = zIndex;
+        card.style.transform = `rotate(${angle}deg)`;
+
+        // Staggered entrance
+        card.style.opacity = '0';
+        card.style.transition = 'none';
+        setTimeout(() => {
+            card.style.transition = `transform 0.5s var(--ease-default), opacity 0.4s var(--ease-default)`;
+            card.style.opacity = '1';
+        }, i * 40);
+
+        card.dataset.fanAngle = angle;
+        card.dataset.fanZ = zIndex;
+    });
+
+    // Hover: straighten and lift
+    gridElement.addEventListener('mouseenter', (e) => {
+        const card = e.target.closest('.card');
+        if (!card || card.classList.contains('selected')) return;
+        card.style.transform = 'rotate(0deg) translateY(-30px) scale(1.2)';
+        card.style.zIndex = '200';
+    }, true);
+
+    gridElement.addEventListener('mouseleave', (e) => {
+        const card = e.target.closest('.card');
+        if (!card || card.classList.contains('selected')) return;
+        card.style.transform = `rotate(${card.dataset.fanAngle}deg)`;
+        card.style.zIndex = card.dataset.fanZ;
+    }, true);
+}
+
+function handleCardClick(el, card, type) {
+    const selectedKey = `selected${capitalize(type)}Cards`;
+    const selected = app[selectedKey];
+    const idx = selected.findIndex(c => c.id === card.id);
+
+    if (idx === -1) {
+        // Select
+        if (selected.length >= 3) return;
+        selected.push(card);
+
+        el.classList.add('flipped');
+        el.style.transform = 'rotate(0deg) translateY(-50px) scale(1.25)';
+        el.style.zIndex = '300';
+
+        // Flip burst effect
+        const burst = document.createElement('div');
+        burst.className = 'card-flip-burst';
+        el.querySelector('.card-inner').appendChild(burst);
+        burst.addEventListener('animationend', () => burst.remove());
+
+        // Shimmer on the front face
+        el.querySelector('.card-front').classList.add('card-shimmer');
+
+        setTimeout(() => el.classList.add('selected'), 400);
+
+        // Click ripple (defined in Task 6, safe to call if exists)
+        if (typeof spawnFlipRipple === 'function') spawnFlipRipple(el, type);
+    } else {
+        // Deselect
+        selected.splice(idx, 1);
+        el.classList.remove('selected');
+        el.querySelector('.card-front').classList.remove('card-shimmer');
+
+        el.style.transform = `rotate(${el.dataset.fanAngle}deg)`;
+        el.style.zIndex = el.dataset.fanZ;
+        setTimeout(() => el.classList.remove('flipped'), 50);
+    }
+
+    updateConfirmButton(type, selected.length);
+}
+
+function updateConfirmButton(type, count) {
+    const btn = document.getElementById(`${type}-confirm`);
+    btn.textContent = `Confirm Selection (${count}/3)`;
+    btn.disabled = count !== 3;
+}
+
+function populateCardGrid(type) {
+    const grid = document.getElementById(`${type}-grid`);
+    grid.innerHTML = '';
+
+    const cards = [...app[`${type}Cards`]];
+    shuffleArray(cards);
+
+    cards.forEach(card => {
+        grid.appendChild(createCard(card, type));
+    });
+
+    // Layout after DOM has the cards
+    requestAnimationFrame(() => applyFanLayout(grid));
+}

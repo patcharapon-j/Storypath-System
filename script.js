@@ -671,6 +671,194 @@ function resetApp() {
 }
 
 // ══════════════════════════════════════════════════
+// ── Atmospheric Effects ──
+// ══════════════════════════════════════════════════
+
+function initDotGrid() {
+    const canvas = document.getElementById('dot-grid-canvas');
+    const ctx = canvas.getContext('2d');
+    let mouseX = -1000, mouseY = -1000;
+    let waves = [];
+    const isMobile = 'ontouchstart' in window;
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    if (!isMobile) {
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+    }
+
+    // Click wave
+    document.addEventListener('click', (e) => {
+        waves.push({
+            x: e.clientX,
+            y: e.clientY,
+            radius: 0,
+            maxRadius: 350,
+            speed: 380,
+            intensity: 0.6,
+            color: [155, 109, 255],
+            startTime: performance.now()
+        });
+    });
+
+    // Public method to trigger a flip wave from outside
+    window.spawnDotGridWave = function(x, y, color) {
+        waves.push({
+            x, y,
+            radius: 0,
+            maxRadius: 650,
+            speed: 380,
+            intensity: 1.0,
+            color: color || [155, 109, 255],
+            startTime: performance.now()
+        });
+    };
+
+    const spacing = 22;
+    const baseRadius = 0.8;
+    const baseAlpha = 0.07;
+    const proximityRadius = 140;
+    const proximityAlpha = 0.38;
+    const proximitySize = 2.4;
+
+    function draw(now) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const ex = canvas.width * 0.45;
+        const ey = canvas.height * 0.42;
+
+        // Update waves
+        waves = waves.filter(w => {
+            const elapsed = (now - w.startTime) / 1000;
+            w.radius = elapsed * w.speed;
+            return w.radius < w.maxRadius;
+        });
+
+        const cols = Math.ceil(canvas.width / spacing) + 1;
+        const rows = Math.ceil(canvas.height / spacing) + 1;
+
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const x = c * spacing;
+                const y = r * spacing;
+
+                // Elliptical mask
+                const dx = (x - cx) / ex;
+                const dy = (y - cy) / ey;
+                const ellipse = dx * dx + dy * dy;
+                if (ellipse > 1) continue;
+                const mask = 1 - ellipse;
+
+                let alpha = baseAlpha * mask;
+                let radius = baseRadius;
+
+                // Mouse proximity (desktop only)
+                if (!isMobile) {
+                    const mx = x - mouseX;
+                    const my = y - mouseY;
+                    const md = Math.sqrt(mx * mx + my * my);
+                    if (md < proximityRadius) {
+                        const t = 1 - md / proximityRadius;
+                        alpha = Math.max(alpha, proximityAlpha * t * mask);
+                        radius = Math.max(radius, proximitySize * t);
+                    }
+                }
+
+                // Wave influence
+                let waveAlpha = 0;
+                for (const w of waves) {
+                    const wd = Math.sqrt((x - w.x) ** 2 + (y - w.y) ** 2);
+                    const ringWidth = 90;
+                    const dist = Math.abs(wd - w.radius);
+                    if (dist < ringWidth) {
+                        const falloff = Math.pow(1 - dist / ringWidth, 1.4);
+                        waveAlpha = Math.max(waveAlpha, falloff * w.intensity * (1 - w.radius / w.maxRadius));
+                    }
+                }
+
+                if (waveAlpha > 0) {
+                    const w = waves.find(w => {
+                        const wd = Math.sqrt((x - w.x) ** 2 + (y - w.y) ** 2);
+                        return Math.abs(wd - w.radius) < 90;
+                    });
+                    if (w) {
+                        ctx.beginPath();
+                        ctx.arc(x, y, Math.max(radius, 1.5), 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(${w.color.join(',')}, ${waveAlpha * mask})`;
+                        ctx.fill();
+                    }
+                }
+
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(155, 109, 255, ${alpha})`;
+                ctx.fill();
+
+                // Glow halo for mouse proximity
+                if (!isMobile && radius > baseRadius + 0.5) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(155, 109, 255, ${(alpha - baseAlpha) * 0.15})`;
+                    ctx.fill();
+                }
+            }
+        }
+
+        requestAnimationFrame(draw);
+    }
+
+    requestAnimationFrame(draw);
+}
+
+function initClickRipples() {
+    document.addEventListener('click', (e) => {
+        const ripple = document.createElement('div');
+        ripple.className = 'click-ripple';
+        ripple.style.left = e.clientX + 'px';
+        ripple.style.top = e.clientY + 'px';
+        document.body.appendChild(ripple);
+        ripple.addEventListener('animationend', () => ripple.remove());
+    });
+}
+
+function spawnFlipRipple(cardEl, type) {
+    const rect = cardEl.getBoundingClientRect();
+    const x = rect.left + rect.width / 2;
+    const y = rect.top + rect.height / 2;
+
+    const colorMap = {
+        legacy: [155, 109, 255],
+        bond: [107, 157, 245],
+        catalyst: [224, 85, 85]
+    };
+    const color = colorMap[type] || [155, 109, 255];
+
+    // CSS ripple
+    const ripple = document.createElement('div');
+    ripple.className = 'click-ripple flip-ripple';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    ripple.style.background = `radial-gradient(circle, rgba(${color.join(',')}, 0.15), transparent 70%)`;
+    document.body.appendChild(ripple);
+    ripple.addEventListener('animationend', () => ripple.remove());
+
+    // Dot grid wave
+    if (window.spawnDotGridWave) {
+        window.spawnDotGridWave(x, y, color);
+    }
+}
+
+// ══════════════════════════════════════════════════
 // ── Initialization ──
 // ══════════════════════════════════════════════════
 
@@ -724,4 +912,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Progress bar popovers
     setupProgressPopovers();
+
+    // Atmospheric effects
+    initDotGrid();
+    initClickRipples();
 });

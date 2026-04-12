@@ -226,17 +226,17 @@ function applyFanLayout(gridElement) {
         card.dataset.fanZ = zIndex;
     });
 
-    // Hover: straighten and lift
+    // Hover: straighten and lift (skip flipped/selected cards)
     gridElement.addEventListener('mouseenter', (e) => {
         const card = e.target.closest('.card');
-        if (!card || card.classList.contains('selected')) return;
+        if (!card || card.classList.contains('selected') || card.classList.contains('flipped')) return;
         card.style.transform = 'rotate(0deg) translateY(-30px) scale(1.2)';
         card.style.zIndex = '200';
     }, true);
 
     gridElement.addEventListener('mouseleave', (e) => {
         const card = e.target.closest('.card');
-        if (!card || card.classList.contains('selected')) return;
+        if (!card || card.classList.contains('selected') || card.classList.contains('flipped')) return;
         card.style.transform = `rotate(${card.dataset.fanAngle}deg)`;
         card.style.zIndex = card.dataset.fanZ;
     }, true);
@@ -281,6 +281,11 @@ function handleCardClick(el, card, type) {
     }
 
     updateConfirmButton(type, selected.length);
+
+    // Auto-advance to Phase 2 when 3 cards are selected
+    if (selected.length === 3 && idx === -1) {
+        setTimeout(() => enterPhase2(type), 600);
+    }
 }
 
 function updateConfirmButton(type, count) {

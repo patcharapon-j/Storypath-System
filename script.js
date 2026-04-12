@@ -1078,6 +1078,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // Progress bar popovers
     setupProgressPopovers();
 
+    // Reapply fan layout on resize
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            ['legacy', 'bond', 'catalyst'].forEach(type => {
+                if (app[`${type}Phase`] === 'fan' && app.currentScreen === `${type}-screen`) {
+                    const grid = document.getElementById(`${type}-grid`);
+                    if (grid.children.length > 0) {
+                        applyFanLayout(grid);
+                    }
+                }
+            });
+        }, 250);
+    });
+
+    // Touch support: prevent double-tap zoom on cards
+    document.addEventListener('touchend', (e) => {
+        if (e.target.closest('.card') || e.target.closest('.promoted-card') || e.target.closest('.option-card')) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+
     // Atmospheric effects
     initDotGrid();
     initClickRipples();

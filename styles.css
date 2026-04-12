@@ -112,56 +112,24 @@ header h1 {
 
 /* Card Fan Layout */
 .card-grid {
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: center;
-    align-items: flex-end;
-    margin: 80px 0;
-    padding: 0 30px;
     position: relative;
-    min-height: 500px;
-    perspective: 1500px;
+    margin: 20px 0 40px;
+    /* height is set dynamically by JS */
 }
 
-/* Apply a fan effect to cards */
+/* Cards are absolutely positioned by JS for the arc layout */
 .card-grid .card {
-    margin: 0 -35px; /* Overlapping for fan effect */
-    transform-origin: bottom center;
-    transition: transform 0.4s ease, z-index 0s 0.4s;
-    position: relative;
-    z-index: 1;
-    flex: 0 0 180px; /* Fixed width */
-}
-
-/* Individual card rotations for fan effect */
-.card-grid .card:nth-child(1) { transform: rotate(-24deg) translateY(-40px); z-index: 1; }
-.card-grid .card:nth-child(2) { transform: rotate(-18deg) translateY(-25px); z-index: 2; }
-.card-grid .card:nth-child(3) { transform: rotate(-12deg) translateY(-15px); z-index: 3; }
-.card-grid .card:nth-child(4) { transform: rotate(-6deg) translateY(-8px); z-index: 4; }
-.card-grid .card:nth-child(5) { transform: rotate(0deg) translateY(-5px); z-index: 5; }
-.card-grid .card:nth-child(6) { transform: rotate(6deg) translateY(-8px); z-index: 4; }
-.card-grid .card:nth-child(7) { transform: rotate(12deg) translateY(-15px); z-index: 3; }
-.card-grid .card:nth-child(8) { transform: rotate(18deg) translateY(-25px); z-index: 2; }
-.card-grid .card:nth-child(9) { transform: rotate(24deg) translateY(-40px); z-index: 1; }
-
-/* Additional cards if more than 9 */
-.card-grid .card:nth-child(10) { transform: rotate(30deg) translateY(-60px); z-index: 0; }
-.card-grid .card:nth-child(11) { transform: rotate(-30deg) translateY(-60px); z-index: 0; }
-
-.card-grid .card:hover {
-    transform: rotate(0deg) translateY(-50px) scale(1.15) !important;
-    z-index: 100 !important;
-    transition: transform 0.4s ease, z-index 0s;
+    position: absolute;
+    transform-origin: center center;
+    transition: transform 0.5s ease, z-index 0s;
 }
 
 .card {
-    position: relative;
-    height: 300px;
-    width: 100%;
     background-color: transparent;
     border-radius: 12px;
     cursor: pointer;
     perspective: 1000px;
+    aspect-ratio: 867 / 1431;
 }
 
 .card-inner {
@@ -202,7 +170,7 @@ header h1 {
 .card img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Changed back to cover to remove white padding */
+    object-fit: cover;
     border-radius: 10px;
 }
 
@@ -251,7 +219,6 @@ header h1 {
 
 .card:hover {
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-    transform: translateY(-10px);
 }
 
 .card.selected {
@@ -291,7 +258,7 @@ header h1 {
 
 .final-card {
     width: 100%;
-    height: 400px; /* Taller for better image display */
+    aspect-ratio: 867 / 1431;
     position: relative;
     transform-style: preserve-3d;
     transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -327,7 +294,7 @@ header h1 {
     object-fit: cover;
     object-position: center;
     border-radius: 15px;
-    display: block; /* Ensures no extra spacing */
+    display: block;
 }
 
 .final-card.flipped {
@@ -586,7 +553,7 @@ header h1 {
 }
 
 .summary-card-img {
-    height: 320px; /* Increased height for better image display */
+    aspect-ratio: 867 / 1431;
     background-color: #f0f0f0;
     border-radius: 15px;
     margin-bottom: 25px;
@@ -605,7 +572,7 @@ header h1 {
     height: 100%;
     object-fit: cover;
     object-position: center;
-    display: block; /* Ensures no extra spacing */
+    display: block;
 }
 
 .summary-card h4 {
@@ -707,29 +674,7 @@ header h1 {
     }
 
     .card-grid {
-        margin: 60px 0;
-        padding: 0 10px;
-        min-height: 400px;
-    }
-
-    .card-grid .card {
-        flex: 0 0 140px;
-        margin: 0 -25px;
-    }
-
-    /* Adjust fan angles for mobile */
-    .card-grid .card:nth-child(1) { transform: rotate(-20deg) translateY(-30px); }
-    .card-grid .card:nth-child(2) { transform: rotate(-15deg) translateY(-20px); }
-    .card-grid .card:nth-child(3) { transform: rotate(-10deg) translateY(-12px); }
-    .card-grid .card:nth-child(4) { transform: rotate(-5deg) translateY(-6px); }
-    .card-grid .card:nth-child(5) { transform: rotate(0deg) translateY(-4px); }
-    .card-grid .card:nth-child(6) { transform: rotate(5deg) translateY(-6px); }
-    .card-grid .card:nth-child(7) { transform: rotate(10deg) translateY(-12px); }
-    .card-grid .card:nth-child(8) { transform: rotate(15deg) translateY(-20px); }
-    .card-grid .card:nth-child(9) { transform: rotate(20deg) translateY(-30px); }
-
-    .card {
-        height: 200px;
+        margin: 20px 0;
     }
 
     .selected-cards {
@@ -737,11 +682,7 @@ header h1 {
     }
 
     .final-card-container {
-        width: 220px;
-    }
-
-    .final-card {
-        height: 320px;
+        width: 200px;
     }
 
     .catalyst-options {
@@ -758,40 +699,15 @@ header h1 {
         width: 100%;
     }
 
-    .summary-card-img {
-        height: 280px;
-    }
 }
 
 @media (max-width: 480px) {
     .card-grid {
-        margin: 40px 0;
-        min-height: 350px;
+        margin: 10px 0;
     }
 
-    .card-grid .card {
-        flex: 0 0 120px;
-        margin: 0 -20px;
-    }
-
-    /* Tighter fan for very small screens */
-    .card-grid .card:nth-child(1) { transform: rotate(-16deg) translateY(-25px); }
-    .card-grid .card:nth-child(2) { transform: rotate(-12deg) translateY(-16px); }
-    .card-grid .card:nth-child(3) { transform: rotate(-8deg) translateY(-10px); }
-    .card-grid .card:nth-child(4) { transform: rotate(-4deg) translateY(-5px); }
-    .card-grid .card:nth-child(5) { transform: rotate(0deg) translateY(-3px); }
-    .card-grid .card:nth-child(6) { transform: rotate(4deg) translateY(-5px); }
-    .card-grid .card:nth-child(7) { transform: rotate(8deg) translateY(-10px); }
-    .card-grid .card:nth-child(8) { transform: rotate(12deg) translateY(-16px); }
-    .card-grid .card:nth-child(9) { transform: rotate(16deg) translateY(-25px); }
-
-    .card {
-        height: 180px;
-    }
-
-    .final-card {
-        width: 160px;
-        height: 230px;
+    .final-card-container {
+        width: 150px;
     }
 
     .primary-btn, .secondary-btn {
